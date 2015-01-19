@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// MonoBehaviourのシングルトンクラス
@@ -25,6 +24,7 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBe
                     var obj = new GameObject( typeof( T ).ToString() );
                     _instance = obj.AddComponent<T>();
 
+                    DontDestroyOnLoad( obj );
                     Debug.Log( "Create " + typeof( T ).ToString() );
                 }
             }
@@ -46,6 +46,7 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBe
     protected bool CheckInstance() {
         if( _instance == null ) {
             _instance = (T)this;
+            DontDestroyOnLoad( this );
             return true;
         } else if( Instance == this ) {
             return true;
