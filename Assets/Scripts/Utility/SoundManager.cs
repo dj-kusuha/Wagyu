@@ -57,13 +57,14 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// <summary>
     /// サウンド再生
     /// </summary>
-    /// <param name="clipname"></param>
-    /// <param name="volume"></param>
-    /// <param name="isLoop"></param>
-    /// <returns></returns>
-    public AudioSource Play( string clipname, float volume, bool isLoop ) {
+    /// <param name="clipname">再生するクリップ名</param>
+    /// <param name="volume">音量( 0f ～ 1f )</param>
+    /// <param name="isLoop">ループフラグ( true : ループする )</param>
+    /// <returns>再生を開始したAudioClip</returns>
+    public AudioSource Play( string clipname, float volume = 1f, bool isLoop = false ) {
+        var clip = GetAudioClip( clipname );
         // ファイル存在チェック
-        if( !this.Clips.ContainsKey( clipname ) ) {
+        if( clip == null ) {
             Debug.LogError( "指定されたサウンドファイル 「" + clipname + "」 が見つかりません。" );
             return null;
         }
@@ -71,13 +72,46 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         // AudioSourceを生成またはキャッシュから取得
         var source = GetAudioSource();
         // パラメータ設定
-        source.clip = this.Clips[ clipname ];
+        source.clip = clip;
         source.volume = volume;
         source.loop = isLoop;
         // 再生
         source.Play();
 
         return source;
+    }
+
+    /// <summary>
+    /// サウンド停止
+    /// </summary>
+    /// <param name="clipname">停止するクリップ名</param>
+    public void Stop( string clipname ) {
+        // 指定のクリップ名のクリップを鳴らしているものの再生を止める
+        var sources = this.cache.Where( _ => _.isPlaying && _.clip.name == clipname );
+        foreach( var s in sources ) {
+            s.Stop();
+        }
+    }
+
+    /// <summary>
+    /// 全てのサウンド停止
+    /// </summary>
+    public void StopAll() {
+        foreach( var s in this.cache ) {
+            if( s.isPlaying ) { s.Stop(); }
+        }
+    }
+
+    /// <summary>
+    /// キャッシュをクリアする
+    /// </summary>
+    /// <remarks>同時再生するサウンドが多い場合、適当なタイミングで呼んでください。</remarks>
+    public void ClearCache() {
+        // 再生中ではないものを破棄する
+        var sources = this.cache.Where( _ => !_.isPlaying );
+        foreach( var s in sources ) { Destroy( s.gameObject ); }
+        // 再生中のものだけにしたHashSetを新たに生成
+        this.cache = new HashSet<AudioSource>( this.cache.Where( _ => _.isPlaying ) );
     }
 
     #endregion
@@ -103,6 +137,17 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         // キャッシュに積む
         this.cache.Add( ret );
 
+        return ret;
+    }
+
+    /// <summary>
+    /// 指定された名前のAudioClipを取得する
+    /// </summary>
+    /// <param name="clipname">クリップ名</param>
+    /// <returns>AudioClip</returns>
+    private AudioClip GetAudioClip( string clipname ) {
+        AudioClip ret = null;
+        this.Clips.TryGetValue( clipname, out ret );
         return ret;
     }
 
