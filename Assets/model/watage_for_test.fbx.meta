@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: 878c57726e6512e4687a71df727b2019
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Armature
+    100004: watage
+    100006: watage_fluff_a01
+    100008: watage_fluff_a02
+    100010: watage_fluff_a03
+    100012: watage_fluff_a03_end
+    100014: watage_fluff_b01
+    100016: watage_fluff_b02
+    100018: watage_fluff_b03
+    100020: watage_fluff_b03_end
+    100022: watage_fluff_c01
+    100024: watage_fluff_c02
+    100026: watage_fluff_c03
+    100028: watage_fluff_c03_end
+    100030: watage_fluff_d01
+    100032: watage_fluff_d02
+    100034: watage_fluff_d03
+    100036: watage_fluff_d03_end
+    100038: watage_fluff_e01
+    100040: watage_fluff_e02
+    100042: watage_fluff_e03
+    100044: watage_fluff_e03_end
+    100046: watage_fluff_f01
+    100048: watage_fluff_f02
+    100050: watage_fluff_f03
+    100052: watage_fluff_f03_end
+    100054: watage_fluff_g01
+    100056: watage_fluff_g02
+    100058: watage_fluff_g03
+    100060: watage_fluff_g03_end
+    100062: watage_fluff_h01
+    100064: watage_fluff_h02
+    100066: watage_fluff_h03
+    100068: watage_fluff_h03_end
+    100070: watage_root
+    100072: watage_trunk_01
+    100074: watage_trunk_02
+    100076: watage_trunk_03
+    100078: watage_trunk_04
+    100080: watage_trunk_05
+    400000: //RootNode
+    400002: Armature
+    400004: watage
+    400006: watage_fluff_a01
+    400008: watage_fluff_a02
+    400010: watage_fluff_a03
+    400012: watage_fluff_a03_end
+    400014: watage_fluff_b01
+    400016: watage_fluff_b02
+    400018: watage_fluff_b03
+    400020: watage_fluff_b03_end
+    400022: watage_fluff_c01
+    400024: watage_fluff_c02
+    400026: watage_fluff_c03
+    400028: watage_fluff_c03_end
+    400030: watage_fluff_d01
+    400032: watage_fluff_d02
+    400034: watage_fluff_d03
+    400036: watage_fluff_d03_end
+    400038: watage_fluff_e01
+    400040: watage_fluff_e02
+    400042: watage_fluff_e03
+    400044: watage_fluff_e03_end
+    400046: watage_fluff_f01
+    400048: watage_fluff_f02
+    400050: watage_fluff_f03
+    400052: watage_fluff_f03_end
+    400054: watage_fluff_g01
+    400056: watage_fluff_g02
+    400058: watage_fluff_g03
+    400060: watage_fluff_g03_end
+    400062: watage_fluff_h01
+    400064: watage_fluff_h02
+    400066: watage_fluff_h03
+    400068: watage_fluff_h03_end
+    400070: watage_root
+    400072: watage_trunk_01
+    400074: watage_trunk_02
+    400076: watage_trunk_03
+    400078: watage_trunk_04
+    400080: watage_trunk_05
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cube
+    4300002: watage
+    9500000: //RootNode
+    13700000: watage
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
