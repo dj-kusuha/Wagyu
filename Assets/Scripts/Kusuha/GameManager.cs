@@ -6,14 +6,22 @@ using System.Collections;
 /// </summary>
 public class GameManager : SingletonMonoBehaviour<GameManager> {
 
-    [SerializeField]
-    private GameObject unityChan;
+    
+    private GameObject _player;
+    private GameObject Player {
+        get {
+            if( this._player == null ) {
+                this._player = GameObject.FindWithTag( "Player" );
+            }
+            return this._player;
+        }
+    }
 
     public void OnHitEnemy() {
         Debug.Log( "OnHitEnemy" );
 
         Destroy( this );
-        Destroy( this.unityChan );
+        Destroy( this.Player );
     }
 
     public void OnHitGoal() {
