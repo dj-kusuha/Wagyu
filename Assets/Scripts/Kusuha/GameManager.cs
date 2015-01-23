@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
@@ -9,9 +10,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     #region // Inspectorで設定するprivate変数
 
     /// <summary>
+    /// 時間を表示するText
+    /// </summary>
+    [SerializeField, Tooltip( "時間を表示するTextを指定します" ), Header( "Parameter Labels" )]
+    private Text timeText;
+
+    /// <summary>
     /// プレイヤーの初期ヒットポイント
     /// </summary>
-    [SerializeField, Tooltip( "プレイヤーの初期ヒットポイント" )]
+    [SerializeField, Tooltip( "プレイヤーの初期ヒットポイントを指定します" ), Header( "Settings" )]
     private int PlayerStartHP;
 
     #endregion
@@ -37,21 +44,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     //-------------------------------------------------------------------------
     #region // privateプロパティ
 
-
+    /// <summary>
+    /// ゲームをプレー中かどうか
+    /// </summary>
+    /// <remarks>死んだり、ゴールしたり、ポーズしたりしたらfalse</remarks>
+    private bool IsPlaying { get; set; }
 
     #endregion
     //-------------------------------------------------------------------------
     #region // public変数
-
-    /// <summary>
-    /// 初期化処理
-    /// </summary>
-    /// <remarks>ゲーム開始時に必ず呼ぶ</remarks>
-    public void Initialize() {
-        this.time = 0f;
-        this.hp = this.PlayerStartHP;
-        this.player = GameObject.FindWithTag( "Player" );
-    }
 
     /// <summary>
     /// ダメージを食らう処理
@@ -65,6 +66,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         if( this.hp <= 0 ) {
             // 今はとりあえずユニティちゃんを削除しておく
             Destroy( this.player );
+
+            this.IsPlaying = false;
         }
     }
 
@@ -85,6 +88,40 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     private void Start() {
         Initialize();
     }
+
+    /// <summary>
+    /// 定期処理
+    /// </summary>
+    private void Update() {
+        // ゲームプレイ中
+        if( this.IsPlaying ) {
+            // パラメータ更新
+            UpdateParameters();
+        }
+    }
+
+    /// <summary>
+    /// パラメータ更新処理
+    /// </summary>
+    private void UpdateParameters() {
+        // 時間経過させる
+        this.time += Time.deltaTime;
+        // 各種Text更新
+        this.timeText.text = this.time.ToString( "f2" );
+    }
+
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
+    /// <remarks>ゲーム開始時に必ず呼ぶ</remarks>
+    private void Initialize() {
+        this.time = 0f;
+        this.hp = this.PlayerStartHP;
+        this.player = GameObject.FindWithTag( "Player" );
+
+        this.IsPlaying = true;
+    }
+
 
     #endregion
     //-------------------------------------------------------------------------
