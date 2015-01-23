@@ -10,6 +10,22 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     //-------------------------------------------------------------------------
     #region // 宣言・定数
 
+    /// <summary>
+    /// サウンド定義
+    /// </summary>
+    public enum Sounds {
+        SEPositive,
+        SENegative,
+    }
+
+    /// <summary>
+    /// サウンド定義と実際のファイルの名前を紐付けるディクショナリ
+    /// </summary>
+    private static readonly Dictionary<Sounds, string> SoundsDictionary = new Dictionary<Sounds, string>(){
+        { Sounds.SEPositive, "se_positive" },
+        { Sounds.SENegative, "se_negative" },
+    };
+
     #endregion
     //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
@@ -57,15 +73,15 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// <summary>
     /// サウンド再生
     /// </summary>
-    /// <param name="clipname">再生するクリップ名</param>
+    /// <param name="sounds">再生するサウンド</param>
     /// <param name="volume">音量( 0f ～ 1f )</param>
     /// <param name="isLoop">ループフラグ( true : ループする )</param>
     /// <returns>再生を開始したAudioClip</returns>
-    public AudioSource Play( string clipname, float volume = 1f, bool isLoop = false ) {
-        var clip = GetAudioClip( clipname );
+    public AudioSource Play( Sounds sounds, float volume = 1f, bool isLoop = false ) {
+        var clip = GetAudioClip( sounds );
         // ファイル存在チェック
         if( clip == null ) {
-            Debug.LogError( "指定されたサウンドファイル 「" + clipname + "」 が見つかりません。" );
+            Debug.LogError( "指定されたサウンド「" + sounds + "」 が見つかりません。" );
             return null;
         }
 
@@ -143,11 +159,13 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// <summary>
     /// 指定された名前のAudioClipを取得する
     /// </summary>
-    /// <param name="clipname">クリップ名</param>
+    /// <param name="sounds">サウンド定義</param>
     /// <returns>AudioClip</returns>
-    private AudioClip GetAudioClip( string clipname ) {
+    private AudioClip GetAudioClip( Sounds sounds ) {
         AudioClip ret = null;
-        this.Clips.TryGetValue( clipname, out ret );
+        if( SoundsDictionary.ContainsKey( sounds ) ) {
+            this.Clips.TryGetValue( SoundsDictionary[ sounds ], out ret );
+        }
         return ret;
     }
 
