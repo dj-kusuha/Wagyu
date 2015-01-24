@@ -15,6 +15,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// サウンド定義
     /// </summary>
     public enum Sounds {
+        None,
         SEPositive,
         SENegative,
 
@@ -73,41 +74,6 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 
     #endregion
     //-------------------------------------------------------------------------
-    #region // コルーチン
-
-    /// <summary>
-    /// フェードイン再生するコルーチン
-    /// </summary>
-    /// <param name="source">フェードイン再生するAudioSource</param>
-    /// <param name="fadeTime">フェード時間</param>
-    /// <param name="volume">最終的な音量</param>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator FadeInPlayCoroutine( AudioSource source, float fadeTime, float volume ) {
-        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
-            source.volume = volume * ( timer / fadeTime );
-            yield return null;
-        }
-        source.volume = volume;
-    }
-
-    /// <summary>
-    /// フェードアウト停止するコルーチン
-    /// </summary>
-    /// <param name="source">フェードアウト停止するAudioSource</param>
-    /// <param name="fadeTime">フェード時間</param>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator FadeOutStopCoroutine( AudioSource source, float fadeTime ) {
-        var prevVolume = source.volume;
-        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
-            source.volume = prevVolume * ( 1 - timer / fadeTime );
-            yield return null;
-        }
-        source.Stop();
-        source.volume = prevVolume;
-    }
-
-    #endregion
-    //-------------------------------------------------------------------------
     #region // public関数
 
     /// <summary>
@@ -136,22 +102,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 
         return source;
     }
-
-    /// <summary>
-    /// サウンドのフェードイン再生
-    /// </summary>
-    /// <param name="sound">再生するサウンド</param>
-    /// <param name="fadeTime">フェードインする時間</param>
-    /// <param name="volume">音量( 0f ～ 1f )</param>
-    /// <param name="isLoop">ループフラグ( true : ループする )</param>
-    /// <returns></returns>
-    public AudioSource PlayFadeIn( Sounds sound, float fadeTime, float volume = 1f, bool isLoop = false ) {
-        var source = Play( sound, 0f, isLoop );
-        StartCoroutine( FadeInPlayCoroutine( source, fadeTime, volume ) );
-        return source;
-    }
-
-
+    
     /// <summary>
     /// サウンド停止
     /// </summary>
@@ -159,26 +110,13 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     public void Stop( Sounds sound ) {
         // 指定のクリップ名のクリップを鳴らしているものの再生を止める
         var clip = GetAudioClip( sound );
-        var sources = this.cache.Where( _ => _.isPlaying && _.clip == clip );
+        var sources = this.cache.Where( _ => _.clip == clip );
         foreach( var s in sources ) {
             s.Stop();
         }
     }
 
-    /// <summary>
-    /// サウンドのフェードアウト停止
-    /// </summary>
-    /// <param name="sound">停止するサウンド</param>
-    /// <param name="fadeTime">フェードアウトする時間</param>
-    public void StopFadeOut( Sounds sound, float fadeTime ) {
-        var clip = GetAudioClip( sound );
-        var sources = this.cache.Where( _ => _.isPlaying && _.clip == clip );
-        foreach( var s in sources ) {
-            StartCoroutine( FadeOutStopCoroutine( s, fadeTime ) );
-        }
-    }
-
-    /// <summary>
+        /// <summary>
     /// サウンド一時停止
     /// </summary>
     /// <param name="sound">再生するサウンド</param>
@@ -196,7 +134,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// </summary>
     public void StopAll() {
         foreach( var s in this.cache ) {
-            if( s.isPlaying ) { s.Stop(); }
+            s.Stop();
         }
     }
 

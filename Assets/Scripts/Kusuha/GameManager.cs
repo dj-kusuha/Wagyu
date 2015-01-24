@@ -45,6 +45,16 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// フェードイン・アウトの時間
+    /// </summary>
+    private const float FadeTime = 0.25f;
+
+    /// <summary>
+    /// サウンドの音量
+    /// </summary>
+    private const float SoundVolume = 1f;
+
     #endregion
     //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
@@ -97,6 +107,12 @@ public class GameManager : MonoBehaviour {
     [SerializeField, Tooltip( "プレイヤーの初期ヒットポイントを指定します" ), Header( "Settings" )]
     private int PlayerStartHP;
 
+    /// <summary>
+    /// BGMの指定
+    /// </summary>
+    [SerializeField, Tooltip( "BGMを指定します。スタート時にこの中からランダムで選ばれます。" )]
+    private SoundManager.Sounds[] bgms;
+
     #endregion
     //-------------------------------------------------------------------------
     #region // private変数
@@ -122,9 +138,14 @@ public class GameManager : MonoBehaviour {
     private GameObject player;
 
     /// <summary>
-    /// BGMのAudioSource
+    /// 直近のBGM
     /// </summary>
-    private AudioSource bgm;
+    private static SoundManager.Sounds prevBgm;
+
+    /// <summary>
+    /// 現在のBGMのAudioSource
+    /// </summary>
+    private static AudioSource bgmSource;
 
     #endregion
     //-------------------------------------------------------------------------
@@ -275,17 +296,44 @@ public class GameManager : MonoBehaviour {
         this.time = 0f;
         this.hp = this.PlayerStartHP;
         this.player = GameObject.FindWithTag( "Player" );
-
         // BGM再生
-        this.bgm = SoundManager.Instance.PlayFadeIn( SoundManager.Sounds.BGMStage1, 1f, isLoop: true );
+        PlayBgm();
+    }
+
+    /// <summary>
+    /// BGMを再生する
+    /// </summary>
+    private void PlayBgm() {
+        // そもそも指定されてなければ何も再生しない
+        if( this.bgms.Length == 0 ) { return; }
+
+        // 指定されたBGM群の中からランダムで一つ選ぶ
+        int index = Random.Range( 0, this.bgms.Length );
+        var selected = this.bgms[ index ];
+        // 最初から再生なのか、それとも一時停止から再生なのか
+        bool isRestart = Random.Range( 0, 2 ) == 0;
+
+        // 直近のBGMと同じか調べる
+        if( prevBgm == selected && isRestart ) {
+            // 同じなのでそのままフェードイン再生
+            bgmSource.volume = 0f;
+            bgmSource.Play();
+            PlayFadeIn( bgmSource, FadeTime, SoundVolume );
+        } else {
+            // BGMを一旦停止
+            SoundManager.Instance.Stop( prevBgm );
+            // 改めて再生
+            bgmSource = SoundManager.Instance.Play( selected, 0f, true );
+            PlayFadeIn( bgmSource, FadeTime, SoundVolume );
+            // 直近のBGMを更新
+            prevBgm = selected;
+        }
     }
 
     /// <summary>
     /// リスタート処理
     /// </summary>
     private void ReStart() {
-        // BGM停止
-        SoundManager.Instance.Stop( SoundManager.Sounds.BGMStage1 );
         // シーンロード
         Application.LoadLevel( Application.loadedLevel );
         // フェーズをなしにする
@@ -314,7 +362,7 @@ public class GameManager : MonoBehaviour {
                 // 死亡画面出す
                 CreateCanvas( this.deadCanvas );
                 // BGMフェードアウト
-                StartCoroutine( SoundManager.Instance.FadeOutStopCoroutine( this.bgm, 0.5f ) );
+                StartCoroutine( FadeOutCoroutine( bgmSource, FadeTime, true ) );
                 break;
             case Phase.Goal:
                 // リザルト画面出す
@@ -338,6 +386,83 @@ public class GameManager : MonoBehaviour {
         obj.transform.SetParent( this.uiRoot.transform );
     }
 
+    #endregion
+    //-------------------------------------------------------------------------
+    #region // サウンド処理
+
+    #region // コルーチン
+
+    /// <summary>
+    /// フェードイン再生するコルーチン
+    /// </summary>
+    /// <param name="source">フェードイン再生するAudioSource</param>
+    /// <param name="fadeTime">フェード時間</param>
+    /// <param name="volume">最終的な音量</param>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator FadeInCoroutine( AudioSource source, float fadeTime, float volume = 1f ) {
+        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
+            source.volume = volume * ( timer / fadeTime );
+            yield return null;
+        }
+        source.volume = volume;
+    }
+
+    /// <summary>
+    /// フェードアウト停止するコルーチン
+    /// </summary>
+    /// <param name="source">フェードアウト停止するAudioSource</param>
+    /// <param name="fadeTime">フェード時間</param>
+    /// <param name="isPause">true の時、StopではなくPauseにする</param>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator FadeOutCoroutine( AudioSource source, float fadeTime, bool isPause ) {
+        var prevVolume = source.volume;
+        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
+            source.volume = prevVolume * ( 1 - timer / fadeTime );
+            yield return null;
+        }
+
+        if( isPause ) {
+            source.Pause();
+        } else {
+            source.Stop();
+        }
+
+        source.volume = prevVolume;
+    }
+
+    #endregion
+
+
+    /// <summary>
+    /// サウンドのフェードイン再生
+    /// </summary>
+    /// <param name="source">フェードインするAudioSource</param>
+    /// <param name="fadeTime">フェードインする時間</param>
+    /// <param name="volume">音量( 0f ～ 1f )</param>
+    /// <param name="isLoop">ループフラグ( true : ループする )</param>
+    /// <returns></returns>
+    public AudioSource PlayFadeIn( AudioSource source, float fadeTime, float volume = 1f, bool isLoop = false ) {
+        StartCoroutine( FadeInCoroutine( source, fadeTime, volume ) );
+        return source;
+    }
+
+    /// <summary>
+    /// サウンドのフェードアウト停止
+    /// </summary>
+    /// <param name="source">フェードアウト停止するAudioSource</param>
+    /// <param name="fadeTime">フェードアウトする時間</param>
+    public void StopFadeOut( AudioSource source, float fadeTime ) {
+        StartCoroutine( FadeOutCoroutine( source, fadeTime, false ) );
+    }
+
+    /// <summary>
+    /// サウンドのフェードアウト一時停止
+    /// </summary>
+    /// <param name="sound">フェードアウト一時停止するサウンド</param>
+    /// <param name="fadeTime">フェードアウトする時間</param>
+    public void PauseFadeOut( AudioSource source, float fadeTime ) {
+        StartCoroutine( FadeOutCoroutine( source, fadeTime, true ) );
+    }
 
     #endregion
     //-------------------------------------------------------------------------
