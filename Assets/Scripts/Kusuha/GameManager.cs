@@ -5,7 +5,7 @@ using System.Collections;
 /// <summary>
 /// ゲームのマネージャクラス
 /// </summary>
-public class GameManager : SingletonMonoBehaviour<GameManager> {
+public class GameManager : MonoBehaviour {
     //-------------------------------------------------------------------------
     #region // 宣言・定数
 
@@ -50,10 +50,28 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     #region // Inspectorで設定するprivate変数
 
     /// <summary>
+    /// UI RootのGameObject
+    /// </summary>
+    [SerializeField, Tooltip("UI Rootを指定します。"), Header( "UI Objects" )]
+    private GameObject uiRoot;
+
+    /// <summary>
+    /// 死亡時に表示を行うCanvas
+    /// </summary>
+    [SerializeField, Tooltip( "死亡時に表示を行うCanvasのPrefabを指定します。" )]
+    private GameObject deadCanvas;
+
+    /// <summary>
+    /// クリア時に表示を行うCanvas
+    /// </summary>
+    [SerializeField, Tooltip( "クリア時に表示を行うCanvasのPrefabを指定します。" )]
+    private GameObject resultCanvas;
+
+    /// <summary>
     /// 時間を表示するText
     /// </summary>
-    [SerializeField, Tooltip( "時間を表示するTextを指定します" ), Header( "Parameter Labels" )]
-    private Text timeText;
+    [SerializeField, Tooltip( "時間を表示するTextを指定します" )]
+    private Text timeValueText;
 
     /// <summary>
     /// プレイヤーの初期ヒットポイント
@@ -87,6 +105,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
     #endregion
     //-------------------------------------------------------------------------
+    #region // publicプロパティ
+
+    /// <summary>
+    /// インスタンスプロパティ
+    /// </summary>
+    public static GameManager Instance { get; private set; }
+
+    #endregion
+    //-------------------------------------------------------------------------
     #region // privateプロパティ
 
     /// <summary>
@@ -105,11 +132,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     public void OnDamage( int damage ) {
         Debug.Log( "OnDamage" );
 
-        // ヒットポイントを減らす
-        this.hp -= damage;
-        // ヒットポイントが0以下になったら終わり
-        if( this.hp <= 0 ) {
-            ChangePhase( Phase.Dead );
+        // プレイ中のみ
+        if( this.phase == Phase.Play ) {
+            // ヒットポイントを減らす
+            this.hp -= damage;
+            // ヒットポイントが0以下になったら終わり
+            if( this.hp <= 0 ) {
+                ChangePhase( Phase.Dead );
+            }
         }
     }
 
@@ -119,12 +149,25 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     public void OnHitGoal() {
         Debug.Log( "OnHitGoal" );
 
-        ChangePhase( Phase.Goal );
+        // プレイ中のみ
+        if( this.phase == Phase.Play ) {
+            ChangePhase( Phase.Goal );
+        }
     }
 
     #endregion
     //-------------------------------------------------------------------------
     #region // private関数
+
+    private void Awake() {
+        Instance = this;
+    }
+
+    private void OnDestroy() {
+        if( Instance == this ) {
+            Instance = null;
+        }
+    }
 
     /// <summary>
     /// 開始処理
@@ -188,7 +231,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         // 時間経過させる
         this.time += Time.deltaTime;
         // 各種Text更新
-        this.timeText.text = this.time.ToString( "f2" );
+        this.timeValueText.text = this.time.ToString( "f2" );
     }
 
     /// <summary>
@@ -218,10 +261,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
             case Phase.Pause:
                 break;
             case Phase.Dead:
-                // 今はとりあえずユニティちゃんを削除しておく
+                // TODO: 今はとりあえずユニティちゃんを削除しておく
                 Destroy( this.player );
+                // 死亡画面出す
+                CreateCanvas( this.deadCanvas );
                 break;
             case Phase.Goal:
+                // リザルト画面出す
+                CreateCanvas( this.resultCanvas );
                 break;
 
             default:
@@ -230,6 +277,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         }
 
         this.phase = nextPhase;
+    }
+
+    /// <summary>
+    /// Canvasを生成する
+    /// </summary>
+    /// <param name="canvasPrefab">Canvasのprfab</param>
+    private void CreateCanvas( GameObject canvasPrefab ) {
+        var obj = (GameObject)Instantiate( canvasPrefab );
+        obj.transform.SetParent( this.uiRoot.transform );
     }
 
 

@@ -408,7 +408,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 114588303}
   m_Layer: 5
-  m_Name: UI
+  m_Name: UI Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3022,8 +3022,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1991427946}
-  m_RootOrder: 3
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
 --- !u!114 &610625075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3035,7 +3035,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27c4a12ab8ab8042be94402569538b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeText: {fileID: 1476593695}
+  uiRoot: {fileID: 114588302}
+  deadCanvas: {fileID: 138790, guid: bbc3c0418c91d1f4da4da72be573b430, type: 2}
+  resultCanvas: {fileID: 182280, guid: d9bdca2f379603b4685cd9d141adf6b5, type: 2}
+  timeValueText: {fileID: 1476593695}
   PlayerStartHP: 1
 --- !u!1 &613442561
 GameObject:
@@ -5146,11 +5149,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 960000985}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19, y: 55, z: 40}
+  m_LocalPosition: {x: 19, y: 48, z: 70.3000031}
   m_LocalScale: {x: 20, y: 20, z: 20}
   m_Children: []
   m_Father: {fileID: 1991427946}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!23 &960000987
 Renderer:
   m_ObjectHideFlags: 0
@@ -7208,7 +7211,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1513556059}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.1000004, y: 55, z: 39.7999992}
+  m_LocalPosition: {x: -16, y: 48, z: 70.3000031}
   m_LocalScale: {x: 20, y: 20, z: 20}
   m_Children: []
   m_Father: {fileID: 1991427946}
@@ -10199,7 +10202,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1991427946}
   m_Layer: 0
-  m_Name: 3D
+  m_Name: Field Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10218,7 +10221,6 @@ Transform:
   - {fileID: 688509586}
   - {fileID: 1640166106}
   - {fileID: 1513556063}
-  - {fileID: 610625074}
   - {fileID: 960000986}
   m_Father: {fileID: 0}
   m_RootOrder: 0
