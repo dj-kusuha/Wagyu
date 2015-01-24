@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// UI RootのGameObject
     /// </summary>
-    [SerializeField, Tooltip("UI Rootを指定します。"), Header( "UI Objects" )]
+    [SerializeField, Tooltip( "UI Rootを指定します。" ), Header( "UI Objects" )]
     private GameObject uiRoot;
 
     /// <summary>
@@ -70,25 +70,25 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// ヒットポイントを表示するText
     /// </summary>
-    [SerializeField, Tooltip("ヒットポイントを表示するTextを指定します")]
+    [SerializeField, Tooltip( "ヒットポイントを表示するTextを指定します" )]
     private Text hitPointValueText;
 
     /// <summary>
     /// 高さを表示するText
     /// </summary>
-    [SerializeField, Tooltip("高さを表示するTextを指定します")]
+    [SerializeField, Tooltip( "高さを表示するTextを指定します" )]
     private Text heightValueText;
 
     /// <summary>
     /// 距離を表示するText
     /// </summary>
-    [SerializeField, Tooltip("距離を表示するTextを指定します")]
+    [SerializeField, Tooltip( "距離を表示するTextを指定します" )]
     private Text distanceValueText;
 
     /// <summary>
     /// 時間を表示するText
     /// </summary>
-    [SerializeField, Tooltip("時間を表示するTextを指定します")]
+    [SerializeField, Tooltip( "時間を表示するTextを指定します" )]
     private Text timeValueText;
 
     /// <summary>
@@ -120,6 +120,11 @@ public class GameManager : MonoBehaviour {
     /// プレイヤー(ユニティちゃん)のGameObject
     /// </summary>
     private GameObject player;
+
+    /// <summary>
+    /// BGMのAudioSource
+    /// </summary>
+    private AudioSource bgm;
 
     #endregion
     //-------------------------------------------------------------------------
@@ -257,8 +262,8 @@ public class GameManager : MonoBehaviour {
         // 各種Text更新
         var pos = this.player.transform.position;
         this.hitPointValueText.text = this.hp.ToString();
-        this.heightValueText.text = pos.y.ToString("f2");
-        this.distanceValueText.text = pos.z.ToString("f2");
+        this.heightValueText.text = pos.y.ToString( "f2" );
+        this.distanceValueText.text = pos.z.ToString( "f2" );
         this.timeValueText.text = this.time.ToString( "f2" );
     }
 
@@ -272,18 +277,17 @@ public class GameManager : MonoBehaviour {
         this.player = GameObject.FindWithTag( "Player" );
 
         // BGM再生
-        SoundManager.Instance.PlayFadeIn( SoundManager.Sounds.BGMStage1, 10f, isLoop: true );
+        this.bgm = SoundManager.Instance.PlayFadeIn( SoundManager.Sounds.BGMStage1, 1f, isLoop: true );
     }
 
     /// <summary>
     /// リスタート処理
     /// </summary>
-    private void ReStart()
-    {
+    private void ReStart() {
         // BGM停止
-        SoundManager.Instance.Stop(SoundManager.Sounds.BGMStage1);
+        SoundManager.Instance.Stop( SoundManager.Sounds.BGMStage1 );
         // シーンロード
-        Application.LoadLevel(Application.loadedLevel);
+        Application.LoadLevel( Application.loadedLevel );
         // フェーズをなしにする
         this.phase = Phase.None;
     }
@@ -309,6 +313,8 @@ public class GameManager : MonoBehaviour {
                 UpdateParameters();
                 // 死亡画面出す
                 CreateCanvas( this.deadCanvas );
+                // BGMフェードアウト
+                StartCoroutine( SoundManager.Instance.FadeOutStopCoroutine( this.bgm, 0.5f ) );
                 break;
             case Phase.Goal:
                 // リザルト画面出す
@@ -344,7 +350,7 @@ public class GameManager : MonoBehaviour {
     private void DebugUpdate() {
         // リスタート処理
         if( Input.GetKey( KeyCode.Space ) ) {
-            Application.LoadLevel( Application.loadedLevel );
+            ReStart();
         }
     }
 
