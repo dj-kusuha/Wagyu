@@ -180,6 +180,8 @@ public class GameManager : MonoBehaviour {
     /// 定期処理
     /// </summary>
     private void Update() {
+        DebugUpdate();
+
         switch( this.phase ) {
             // なし
             case Phase.None:
@@ -262,7 +264,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case Phase.Dead:
                 // TODO: 今はとりあえずユニティちゃんを削除しておく
-                Destroy( this.player );
+                //Destroy( this.player );
                 // 死亡画面出す
                 CreateCanvas( this.deadCanvas );
                 break;
@@ -288,6 +290,18 @@ public class GameManager : MonoBehaviour {
         obj.transform.SetParent( this.uiRoot.transform );
     }
 
+
+    #endregion
+    //-------------------------------------------------------------------------
+    #region // デバッグ用
+
+    [System.Diagnostics.Conditional( "_DEBUG" )]
+    private void DebugUpdate() {
+        // リスタート処理
+        if( Input.GetKey( KeyCode.Space ) ) {
+            Application.LoadLevel( Application.loadedLevel );
+        }
+    }
 
     #endregion
     //-------------------------------------------------------------------------

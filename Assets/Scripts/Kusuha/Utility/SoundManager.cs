@@ -6,6 +6,7 @@ using System.Linq;
 /// <summary>
 /// サウンド管理クラス
 /// </summary>
+[RequireComponent(typeof(AudioListener))]
 public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     //-------------------------------------------------------------------------
     #region // 宣言・定数
