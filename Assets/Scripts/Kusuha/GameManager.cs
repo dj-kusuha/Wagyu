@@ -263,8 +263,6 @@ public class GameManager : MonoBehaviour {
             case Phase.Pause:
                 break;
             case Phase.Dead:
-                // TODO: 今はとりあえずユニティちゃんを削除しておく
-                //Destroy( this.player );
                 // 死亡画面出す
                 CreateCanvas( this.deadCanvas );
                 break;
