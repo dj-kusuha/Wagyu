@@ -67,6 +67,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &179090
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 479090}
+  m_Layer: 0
+  m_Name: RightUchiwa
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &179092
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 479092}
+  m_Layer: 0
+  m_Name: LeftUchiwa
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &189800
 GameObject:
   m_ObjectHideFlags: 1
@@ -1372,7 +1402,7 @@ GameObject:
   - 114: {fileID: 11490100}
   - 114: {fileID: 11490096}
   - 114: {fileID: 11490094}
-  - 114: {fileID: 11490098}
+  - 114: {fileID: 11479090}
   m_Layer: 0
   m_Name: unitychan_dynamic
   m_TagString: Player
@@ -3402,7 +3432,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 114558}
-  m_LocalRotation: {x: -.321575403, y: -.550751626, z: .388372689, w: .665153146}
+  m_LocalRotation: {x: .24133049, y: .413318574, z: -.442722976, w: -.758237302}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3432,6 +3462,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 490170}
   m_RootOrder: 16
+--- !u!4 &479090
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179090}
+  m_LocalRotation: {x: 0, y: 4.21817496e-08, z: -7.06471992e-09, w: 1}
+  m_LocalPosition: {x: .474999994, y: .58099997, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 489966}
+  m_RootOrder: 4
+--- !u!4 &479092
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179092}
+  m_LocalRotation: {x: 0, y: 4.21817496e-08, z: -7.06471992e-09, w: 1}
+  m_LocalPosition: {x: -.474999994, y: .58099997, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 489966}
+  m_RootOrder: 3
 --- !u!4 &489800
 Transform:
   m_ObjectHideFlags: 1
@@ -4513,6 +4567,8 @@ Transform:
   - {fileID: 489824}
   - {fileID: 490164}
   - {fileID: 490176}
+  - {fileID: 479092}
+  - {fileID: 479090}
   m_Father: {fileID: 489882}
   m_RootOrder: 1
 --- !u!4 &489968
@@ -6506,6 +6562,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: .189999998
+--- !u!114 &11479090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 189966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e82818cb0062f8e44a083020126c8b67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cnt: 0
+  step: 3
+  anim: {fileID: 0}
+  isIkActive: 0
+  mixWeight: 1
+  LeftHand: {fileID: 0}
+  RightHand: {fileID: 0}
+  RightUchiwa: {fileID: 479090}
+  LeftUchiwa: {fileID: 479092}
 --- !u!114 &11490024
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7291,20 +7367,6 @@ MonoBehaviour:
   interval: 5
   windPower: 1
   gravity: .980000019
---- !u!114 &11490098
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 189966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16931e3bbabb00f478bbbe4759af8343, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetObj: {fileID: 490040}
-  isIkActive: 1
-  mixWeight: 1
 --- !u!114 &11490100
 MonoBehaviour:
   m_ObjectHideFlags: 1
