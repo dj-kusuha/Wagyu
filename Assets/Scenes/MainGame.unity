@@ -9759,7 +9759,6 @@ GameObject:
   - 20: {fileID: 1786023648}
   - 92: {fileID: 1786023647}
   - 124: {fileID: 1786023646}
-  - 81: {fileID: 1786023645}
   - 45: {fileID: 1786023644}
   m_Layer: 0
   m_Name: Main Camera
@@ -9789,14 +9788,6 @@ Skybox:
   m_GameObject: {fileID: 1786023642}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 2100000, guid: da976b1a4f7ebb949b0f71341e4f1821, type: 2}
---- !u!81 &1786023645
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 8190222, guid: 322b799ef91911244ab3c120a78122be,
-    type: 2}
-  m_PrefabInternal: {fileID: 304745953}
-  m_GameObject: {fileID: 1786023642}
-  m_Enabled: 1
 --- !u!124 &1786023646
 Behaviour:
   m_ObjectHideFlags: 0
