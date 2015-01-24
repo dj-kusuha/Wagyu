@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// フェードイン・アウトの時間
     /// </summary>
-    private const float FadeTime = 0.25f;
+    private const float FadeTime = 0.5f;
 
     /// <summary>
     /// サウンドの音量
@@ -58,6 +58,13 @@ public class GameManager : MonoBehaviour {
     #endregion
     //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
+
+    /// <summary>
+    /// leafのGameObject
+    /// </summary>
+    [SerializeField, Tooltip( "leafを指定します。" ), Header( "Game Objects" )]
+    private GameObject leaf;
+
 
     /// <summary>
     /// UI RootのGameObject
@@ -365,8 +372,13 @@ public class GameManager : MonoBehaviour {
                 StartCoroutine( FadeOutCoroutine( bgmSource, FadeTime, true ) );
                 break;
             case Phase.Goal:
+                this.player.SetActive( false );
+                this.leaf.SetActive( true );
                 // リザルト画面出す
-                CreateCanvas( this.resultCanvas );
+                {
+                    var obj = CreateCanvas( this.resultCanvas );
+                    StartCoroutine( WaitSetActive( 2f, obj, true ) );
+                }
                 break;
 
             default:
@@ -381,57 +393,16 @@ public class GameManager : MonoBehaviour {
     /// Canvasを生成する
     /// </summary>
     /// <param name="canvasPrefab">Canvasのprfab</param>
-    private void CreateCanvas( GameObject canvasPrefab ) {
+    /// <returns>生成したCanvasのGameObject</returns>
+    private GameObject CreateCanvas( GameObject canvasPrefab ) {
         var obj = (GameObject)Instantiate( canvasPrefab );
         obj.transform.SetParent( this.uiRoot.transform );
+        return obj;
     }
 
     #endregion
     //-------------------------------------------------------------------------
     #region // サウンド処理
-
-    #region // コルーチン
-
-    /// <summary>
-    /// フェードイン再生するコルーチン
-    /// </summary>
-    /// <param name="source">フェードイン再生するAudioSource</param>
-    /// <param name="fadeTime">フェード時間</param>
-    /// <param name="volume">最終的な音量</param>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator FadeInCoroutine( AudioSource source, float fadeTime, float volume = 1f ) {
-        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
-            source.volume = volume * ( timer / fadeTime );
-            yield return null;
-        }
-        source.volume = volume;
-    }
-
-    /// <summary>
-    /// フェードアウト停止するコルーチン
-    /// </summary>
-    /// <param name="source">フェードアウト停止するAudioSource</param>
-    /// <param name="fadeTime">フェード時間</param>
-    /// <param name="isPause">true の時、StopではなくPauseにする</param>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator FadeOutCoroutine( AudioSource source, float fadeTime, bool isPause ) {
-        var prevVolume = source.volume;
-        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
-            source.volume = prevVolume * ( 1 - timer / fadeTime );
-            yield return null;
-        }
-
-        if( isPause ) {
-            source.Pause();
-        } else {
-            source.Stop();
-        }
-
-        source.volume = prevVolume;
-    }
-
-    #endregion
-
 
     /// <summary>
     /// サウンドのフェードイン再生
@@ -462,6 +433,59 @@ public class GameManager : MonoBehaviour {
     /// <param name="fadeTime">フェードアウトする時間</param>
     public void PauseFadeOut( AudioSource source, float fadeTime ) {
         StartCoroutine( FadeOutCoroutine( source, fadeTime, true ) );
+    }
+
+    #endregion
+    //-------------------------------------------------------------------------
+    #region // コルーチン
+    /// <summary>
+    /// フェードイン再生するコルーチン
+    /// </summary>
+    /// <param name="source">フェードイン再生するAudioSource</param>
+    /// <param name="fadeTime">フェード時間</param>
+    /// <param name="volume">最終的な音量</param>
+    /// <returns>IEnumerator</returns>
+    private IEnumerator FadeInCoroutine( AudioSource source, float fadeTime, float volume = 1f ) {
+        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
+            source.volume = volume * ( timer / fadeTime );
+            yield return null;
+        }
+        source.volume = volume;
+    }
+
+    /// <summary>
+    /// フェードアウト停止するコルーチン
+    /// </summary>
+    /// <param name="source">フェードアウト停止するAudioSource</param>
+    /// <param name="fadeTime">フェード時間</param>
+    /// <param name="isPause">true の時、StopではなくPauseにする</param>
+    /// <returns>IEnumerator</returns>
+    private IEnumerator FadeOutCoroutine( AudioSource source, float fadeTime, bool isPause ) {
+        var prevVolume = source.volume;
+        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ) {
+            source.volume = prevVolume * ( 1 - timer / fadeTime );
+            yield return null;
+        }
+
+        if( isPause ) {
+            source.Pause();
+        } else {
+            source.Stop();
+        }
+
+        source.volume = prevVolume;
+    }
+
+    /// <summary>
+    /// 指定時間待って、GameObject.SetActiveを呼ぶ
+    /// </summary>
+    /// <param name="waitTime">待機時間</param>
+    /// <param name="gameObject">GameObject</param>
+    /// <param name="active">activeにするかどうか</param>
+    /// <returns>IEnumerator</returns>
+    private IEnumerator WaitSetActive( float waitTime, GameObject gameObject,  bool active ) {
+        yield return new WaitForSeconds( waitTime );
+        gameObject.SetActive( active );
     }
 
     #endregion
