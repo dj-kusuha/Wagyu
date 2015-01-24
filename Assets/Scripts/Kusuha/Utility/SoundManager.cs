@@ -16,8 +16,21 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// </summary>
     public enum Sounds {
         None,
-        SEPositive,
-        SENegative,
+        SEStart1,
+        SEStart2,
+
+        SEDamage1,
+        SEDamage2,
+        SEDamage3,
+
+        SEDead1,
+        SEDead2,
+
+        SEClear1,
+        SEClear2,
+
+        SERestart1,
+        SERestart2,
 
         BGMStage1,
     }
@@ -26,9 +39,22 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     /// サウンド定義と実際のファイルの名前を紐付けるディクショナリ
     /// </summary>
     private static readonly Dictionary<Sounds, string> SoundsDictionary = new Dictionary<Sounds, string>(){
-        { Sounds.SEPositive, "se_positive" },
-        { Sounds.SENegative, "se_negative" },
-        
+        { Sounds.SEStart1, "univ1016" },
+        { Sounds.SEStart2, "univ1072" },
+
+        { Sounds.SEDamage1, "univ1091" },
+        { Sounds.SEDamage2, "univ1092" },
+        { Sounds.SEDamage3, "univ1094" },
+
+        { Sounds.SEDead1, "univ1093" },
+        { Sounds.SEDead2, "univ1230" },
+
+        { Sounds.SEClear1, "univ1193" },
+        { Sounds.SEClear2, "univ1018" },
+
+        { Sounds.SERestart1, "univ1026" },
+        { Sounds.SERestart2, "univ1027" },
+
         { Sounds.BGMStage1, "Stage1" },
     };
 
@@ -148,6 +174,16 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         foreach( var s in sources ) { Destroy( s.gameObject ); }
         // 再生中のものだけにしたHashSetを新たに生成
         this.cache = new HashSet<AudioSource>( this.cache.Where( _ => _.isPlaying ) );
+    }
+
+    /// <summary>
+    /// 指定されたサウンドの中からランダムでSEを再生する
+    /// </summary>
+    /// <param name="sounds">指定のサウンド群</param>
+    /// <returns>再生されたサウンドのAudioSource</returns>
+    public AudioSource RandomSEPlay( Sounds[] sounds ) {
+        int index = Random.Range( 0, sounds.Length );
+        return Play( sounds[ index ] );
     }
 
     #endregion

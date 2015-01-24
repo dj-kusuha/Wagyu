@@ -117,8 +117,32 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// BGMの指定
     /// </summary>
-    [SerializeField, Tooltip( "BGMを指定します。スタート時にこの中からランダムで選ばれます。" )]
+    [SerializeField, Tooltip( "BGMを指定します。スタート時にこの中からランダムで選ばれます。" ), Header( "Sound Settings" )]
     private SoundManager.Sounds[] bgms;
+
+    /// <summary>
+    /// ぶつかるSE
+    /// </summary>
+    [SerializeField, Tooltip( "ぶつかるSE" )]
+    private SoundManager.Sounds[] damageSE;
+
+    /// <summary>
+    /// 死亡SE
+    /// </summary>
+    [SerializeField, Tooltip( "死亡SE" )]
+    private SoundManager.Sounds[] deadSE;
+
+    /// <summary>
+    /// クリアSE
+    /// </summary>
+    [SerializeField, Tooltip( "クリアSE" )]
+    private SoundManager.Sounds[] clearSE;
+
+    /// <summary>
+    /// リスタートSE
+    /// </summary>
+    [SerializeField, Tooltip( "リスタートSE" )]
+    private SoundManager.Sounds[] restartSE;
 
     #endregion
     //-------------------------------------------------------------------------
@@ -189,7 +213,13 @@ public class GameManager : MonoBehaviour {
             this.hp -= damage;
             // ヒットポイントが0以下になったら終わり
             if( this.hp <= 0 ) {
+                // 死んだ時SE
+                SoundManager.Instance.RandomSEPlay( this.deadSE );
+
                 ChangePhase( Phase.Dead );
+            } else {
+                // ダメージ食らったSE
+                SoundManager.Instance.RandomSEPlay( this.damageSE );
             }
         }
     }
@@ -202,6 +232,9 @@ public class GameManager : MonoBehaviour {
 
         // プレイ中のみ
         if( this.phase == Phase.Play ) {
+            // クリアしたよSE
+            SoundManager.Instance.RandomSEPlay( this.clearSE );
+
             ChangePhase( Phase.Goal );
         }
     }
@@ -341,6 +374,9 @@ public class GameManager : MonoBehaviour {
     /// リスタート処理
     /// </summary>
     private void ReStart() {
+        // リスタートSE
+        SoundManager.Instance.RandomSEPlay( this.restartSE );
+
         // シーンロード
         Application.LoadLevel( Application.loadedLevel );
         // フェーズをなしにする
