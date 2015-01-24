@@ -5,15 +5,73 @@ using System.Collections;
 /// <summary>
 /// ゲームのマネージャクラス
 /// </summary>
-public class GameManager : SingletonMonoBehaviour<GameManager> {
+public class GameManager : MonoBehaviour {
+    //-------------------------------------------------------------------------
+    #region // 宣言・定数
+
+    /// <summary>
+    /// フェーズ定義
+    /// </summary>
+    private enum Phase {
+        /// <summary>
+        /// なし
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// プレイスタート
+        /// </summary>
+        PlayStart,
+
+        /// <summary>
+        /// ゲームプレイ
+        /// </summary>
+        Play,
+
+        /// <summary>
+        /// ポーズ
+        /// </summary>
+        Pause,
+
+        /// <summary>
+        /// 死亡
+        /// </summary>
+        Dead,
+
+        /// <summary>
+        /// ゴール
+        /// </summary>
+        Goal,
+
+    }
+
+    #endregion
     //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
 
     /// <summary>
+    /// UI RootのGameObject
+    /// </summary>
+    [SerializeField, Tooltip("UI Rootを指定します。"), Header( "UI Objects" )]
+    private GameObject uiRoot;
+
+    /// <summary>
+    /// 死亡時に表示を行うCanvas
+    /// </summary>
+    [SerializeField, Tooltip( "死亡時に表示を行うCanvasのPrefabを指定します。" )]
+    private GameObject deadCanvas;
+
+    /// <summary>
+    /// クリア時に表示を行うCanvas
+    /// </summary>
+    [SerializeField, Tooltip( "クリア時に表示を行うCanvasのPrefabを指定します。" )]
+    private GameObject resultCanvas;
+
+    /// <summary>
     /// 時間を表示するText
     /// </summary>
-    [SerializeField, Tooltip( "時間を表示するTextを指定します" ), Header( "Parameter Labels" )]
-    private Text timeText;
+    [SerializeField, Tooltip( "時間を表示するTextを指定します" )]
+    private Text timeValueText;
 
     /// <summary>
     /// プレイヤーの初期ヒットポイント
@@ -24,6 +82,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     #endregion
     //-------------------------------------------------------------------------
     #region // private変数
+
+    /// <summary>
+    /// フェーズ
+    /// </summary>
+    private Phase phase;
 
     /// <summary>
     /// 経過時間
@@ -42,13 +105,22 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
     #endregion
     //-------------------------------------------------------------------------
+    #region // publicプロパティ
+
+    /// <summary>
+    /// インスタンスプロパティ
+    /// </summary>
+    public static GameManager Instance { get; private set; }
+
+    #endregion
+    //-------------------------------------------------------------------------
     #region // privateプロパティ
 
     /// <summary>
     /// ゲームをプレー中かどうか
     /// </summary>
     /// <remarks>死んだり、ゴールしたり、ポーズしたりしたらfalse</remarks>
-    private bool IsPlaying { get; set; }
+    private bool IsPlaying { get { return this.phase == Phase.Play; } }
 
     #endregion
     //-------------------------------------------------------------------------
@@ -60,14 +132,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     public void OnDamage( int damage ) {
         Debug.Log( "OnDamage" );
 
-        // ヒットポイントを減らす
-        this.hp -= damage;
-        // ヒットポイントが0以下になったら終わり
-        if( this.hp <= 0 ) {
-            // 今はとりあえずユニティちゃんを削除しておく
-            Destroy( this.player );
-
-            this.IsPlaying = false;
+        // プレイ中のみ
+        if( this.phase == Phase.Play ) {
+            // ヒットポイントを減らす
+            this.hp -= damage;
+            // ヒットポイントが0以下になったら終わり
+            if( this.hp <= 0 ) {
+                ChangePhase( Phase.Dead );
+            }
         }
     }
 
@@ -76,27 +148,79 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     /// </summary>
     public void OnHitGoal() {
         Debug.Log( "OnHitGoal" );
+
+        // プレイ中のみ
+        if( this.phase == Phase.Play ) {
+            ChangePhase( Phase.Goal );
+        }
     }
 
     #endregion
     //-------------------------------------------------------------------------
     #region // private関数
 
+    private void Awake() {
+        Instance = this;
+    }
+
+    private void OnDestroy() {
+        if( Instance == this ) {
+            Instance = null;
+        }
+    }
+
     /// <summary>
     /// 開始処理
     /// </summary>
     private void Start() {
-        Initialize();
+        ChangePhase( Phase.PlayStart );
     }
 
     /// <summary>
     /// 定期処理
     /// </summary>
     private void Update() {
-        // ゲームプレイ中
-        if( this.IsPlaying ) {
-            // パラメータ更新
-            UpdateParameters();
+        switch( this.phase ) {
+            // なし
+            case Phase.None:
+                break;
+
+            // プレイスタート
+            case Phase.PlayStart:
+                ChangePhase( Phase.Play );
+                break;
+
+            // プレイ中
+            case Phase.Play:
+                // パラメータ更新
+                UpdateParameters();
+                break;
+
+            // ポーズ中
+            case Phase.Pause:
+                break;
+
+            // 死んだよ
+            case Phase.Dead:
+                // キー押し直したらリスタート
+                if( Input.anyKeyDown ) {
+                    Application.LoadLevel( Application.loadedLevel );
+                    this.phase = Phase.None;
+                }
+                break;
+
+            // ゴールしたよ
+            case Phase.Goal:
+                // TODO: とりあえずキー押し直したらリスタート。この辺はちょっと変える
+                if( Input.anyKeyDown ) {
+                    Application.LoadLevel( Application.loadedLevel );
+                    this.phase = Phase.None;
+                }
+                break;
+
+            default:
+                Debug.LogError( "Unknown Phase: " + this.phase );
+                break;
         }
     }
 
@@ -107,7 +231,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         // 時間経過させる
         this.time += Time.deltaTime;
         // 各種Text更新
-        this.timeText.text = this.time.ToString( "f2" );
+        this.timeValueText.text = this.time.ToString( "f2" );
     }
 
     /// <summary>
@@ -118,8 +242,50 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         this.time = 0f;
         this.hp = this.PlayerStartHP;
         this.player = GameObject.FindWithTag( "Player" );
+    }
 
-        this.IsPlaying = true;
+    /// <summary>
+    /// フェーズ切り替え処理
+    /// </summary>
+    /// <param name="nextPhase">次のフェーズ</param>
+    private void ChangePhase( Phase nextPhase ) {
+        // 切り替えの前処理
+        switch( nextPhase ) {
+            case Phase.None:
+                break;
+            case Phase.PlayStart:
+                Initialize();
+                break;
+            case Phase.Play:
+                break;
+            case Phase.Pause:
+                break;
+            case Phase.Dead:
+                // TODO: 今はとりあえずユニティちゃんを削除しておく
+                Destroy( this.player );
+                // 死亡画面出す
+                CreateCanvas( this.deadCanvas );
+                break;
+            case Phase.Goal:
+                // リザルト画面出す
+                CreateCanvas( this.resultCanvas );
+                break;
+
+            default:
+                Debug.LogError( "Unknown Phase: " + this.phase );
+                break;
+        }
+
+        this.phase = nextPhase;
+    }
+
+    /// <summary>
+    /// Canvasを生成する
+    /// </summary>
+    /// <param name="canvasPrefab">Canvasのprfab</param>
+    private void CreateCanvas( GameObject canvasPrefab ) {
+        var obj = (GameObject)Instantiate( canvasPrefab );
+        obj.transform.SetParent( this.uiRoot.transform );
     }
 
 
