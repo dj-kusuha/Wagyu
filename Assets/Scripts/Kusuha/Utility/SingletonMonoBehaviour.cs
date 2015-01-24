@@ -7,6 +7,11 @@
 public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T> {
 
     /// <summary>
+    /// ゲーム終了中フラグ
+    /// </summary>
+    private static bool IsQuitting { get; set; }
+
+    /// <summary>
     /// インスタンス変数
     /// </summary>
     private static T _instance;
@@ -19,7 +24,7 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBe
             if( _instance == null ) {
                 // シーン上に無いか検索
                 _instance = FindObjectOfType<T>();
-                if( _instance == null ) {
+                if( _instance == null && !IsQuitting ) {
                     // 無い場合は生成する
                     var obj = new GameObject( typeof( T ).ToString() );
                     _instance = obj.AddComponent<T>();
@@ -54,5 +59,14 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBe
 
         Destroy( this );
         return false;
+    }
+
+    /// <summary>
+    /// ゲーム終了時に呼ばれる
+    /// </summary>
+    void OnApplicationQuit()
+    {
+        // 終了フラグを立てる
+        IsQuitting = true;
     }
 }

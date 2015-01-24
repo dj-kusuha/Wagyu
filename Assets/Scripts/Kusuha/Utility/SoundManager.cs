@@ -17,6 +17,8 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     public enum Sounds {
         SEPositive,
         SENegative,
+
+        BGMStage1,
     }
 
     /// <summary>
@@ -25,6 +27,8 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     private static readonly Dictionary<Sounds, string> SoundsDictionary = new Dictionary<Sounds, string>(){
         { Sounds.SEPositive, "se_positive" },
         { Sounds.SENegative, "se_negative" },
+        
+        { Sounds.BGMStage1, "Stage1" },
     };
 
     #endregion
@@ -69,20 +73,58 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 
     #endregion
     //-------------------------------------------------------------------------
+    #region // コルーチン
+    
+    /// <summary>
+    /// フェードイン再生するコルーチン
+    /// </summary>
+    /// <param name="source">フェードイン再生するAudioSource</param>
+    /// <param name="fadeTime">フェード時間</param>
+    /// <param name="volume">最終的な音量</param>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator FadeInPlayCoroutine( AudioSource source, float fadeTime, float volume )
+    {
+        for( float timer = 0f; timer < fadeTime; timer += Time.deltaTime ){
+            source.volume = volume * ( timer / fadeTime );
+            Debug.Log(source.volume);
+            yield return null;
+        }
+        source.volume = volume;
+    }
+
+    /// <summary>
+    /// フェードアウト停止するコルーチン
+    /// </summary>
+    /// <param name="source">フェードアウト停止するAudioSource</param>
+    /// <param name="fadeTime">フェード時間</param>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator FadeOutStopCoroutine( AudioSource source, float fadeTime )
+    {
+        var prevVolume = source.volume;
+        for(float timer = 0f; timer < fadeTime; timer += Time.deltaTime){
+            source.volume = prevVolume * ( 1 - timer / fadeTime );
+            yield return null;
+        }
+        source.Stop();
+        source.volume = prevVolume;
+    }
+
+    #endregion
+    //-------------------------------------------------------------------------
     #region // public関数
 
     /// <summary>
     /// サウンド再生
     /// </summary>
-    /// <param name="sounds">再生するサウンド</param>
+    /// <param name="sound">再生するサウンド</param>
     /// <param name="volume">音量( 0f ～ 1f )</param>
     /// <param name="isLoop">ループフラグ( true : ループする )</param>
     /// <returns>再生を開始したAudioClip</returns>
-    public AudioSource Play( Sounds sounds, float volume = 1f, bool isLoop = false ) {
-        var clip = GetAudioClip( sounds );
+    public AudioSource Play( Sounds sound, float volume = 1f, bool isLoop = false ) {
+        var clip = GetAudioClip( sound );
         // ファイル存在チェック
         if( clip == null ) {
-            Debug.LogError( "指定されたサウンド「" + sounds + "」 が見つかりません。" );
+            Debug.LogError( "指定されたサウンド「" + sound + "」 が見つかりません。" );
             return null;
         }
 
@@ -99,14 +141,56 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     }
 
     /// <summary>
+    /// サウンドのフェードイン再生
+    /// </summary>
+    /// <param name="sound">再生するサウンド</param>
+    /// <param name="fadeTime">フェードインする時間</param>
+    /// <param name="volume">音量( 0f ～ 1f )</param>
+    /// <param name="isLoop">ループフラグ( true : ループする )</param>
+    /// <returns></returns>
+    public AudioSource PlayFadeIn( Sounds sound, float fadeTime, float volume = 1f, bool isLoop = false ) {
+        var source  = Play( sound, 0f, isLoop );
+        StartCoroutine( FadeInPlayCoroutine( source, fadeTime, volume ) );
+        return source;
+    }
+
+
+    /// <summary>
     /// サウンド停止
     /// </summary>
-    /// <param name="clipname">停止するクリップ名</param>
-    public void Stop( string clipname ) {
+    /// <param name="sound">停止するサウンド</param>
+    public void Stop( Sounds sound ) {
         // 指定のクリップ名のクリップを鳴らしているものの再生を止める
-        var sources = this.cache.Where( _ => _.isPlaying && _.clip.name == clipname );
+        var clip = GetAudioClip( sound );
+        var sources = this.cache.Where( _ => _.isPlaying && _.clip.name == clip.name );
         foreach( var s in sources ) {
             s.Stop();
+        }
+    }
+
+    /// <summary>
+    /// サウンドのフェードアウト停止
+    /// </summary>
+    /// <param name="sound">停止するサウンド</param>
+    /// <param name="fadeTime">フェードアウトする時間</param>
+    public void StopFadeOut( Sounds sound, float fadeTime ){
+        var clip = GetAudioClip( sound );
+        var sources = this.cache.Where( _ => _.isPlaying && _.clip == clip );
+        foreach( var s in sources ) {
+            StartCoroutine( FadeOutStopCoroutine( s, fadeTime ) );
+        }
+    }
+
+    /// <summary>
+    /// サウンド一時停止
+    /// </summary>
+    /// <param name="sound">再生するサウンド</param>
+    public void Pause( Sounds sound ) {
+        // 指定のクリップ名のクリップを鳴らしているものの再生を一時停止する
+        var clip = GetAudioClip( sound );
+        var sources = this.cache.Where( _ => _.isPlaying && _.clip == clip );
+        foreach( var s in sources ) {
+            s.Pause();
         }
     }
 

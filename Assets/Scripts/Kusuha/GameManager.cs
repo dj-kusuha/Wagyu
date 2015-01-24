@@ -68,9 +68,27 @@ public class GameManager : MonoBehaviour {
     private GameObject resultCanvas;
 
     /// <summary>
+    /// ヒットポイントを表示するText
+    /// </summary>
+    [SerializeField, Tooltip("ヒットポイントを表示するTextを指定します")]
+    private Text hitPointValueText;
+
+    /// <summary>
+    /// 高さを表示するText
+    /// </summary>
+    [SerializeField, Tooltip("高さを表示するTextを指定します")]
+    private Text heightValueText;
+
+    /// <summary>
+    /// 距離を表示するText
+    /// </summary>
+    [SerializeField, Tooltip("距離を表示するTextを指定します")]
+    private Text distanceValueText;
+
+    /// <summary>
     /// 時間を表示するText
     /// </summary>
-    [SerializeField, Tooltip( "時間を表示するTextを指定します" )]
+    [SerializeField, Tooltip("時間を表示するTextを指定します")]
     private Text timeValueText;
 
     /// <summary>
@@ -159,10 +177,16 @@ public class GameManager : MonoBehaviour {
     //-------------------------------------------------------------------------
     #region // private関数
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     private void Awake() {
         Instance = this;
     }
 
+    /// <summary>
+    /// 破棄時の処理
+    /// </summary>
     private void OnDestroy() {
         if( Instance == this ) {
             Instance = null;
@@ -206,8 +230,7 @@ public class GameManager : MonoBehaviour {
             case Phase.Dead:
                 // キー押し直したらリスタート
                 if( Input.anyKeyDown ) {
-                    Application.LoadLevel( Application.loadedLevel );
-                    this.phase = Phase.None;
+                    ReStart();
                 }
                 break;
 
@@ -215,8 +238,7 @@ public class GameManager : MonoBehaviour {
             case Phase.Goal:
                 // TODO: とりあえずキー押し直したらリスタート。この辺はちょっと変える
                 if( Input.anyKeyDown ) {
-                    Application.LoadLevel( Application.loadedLevel );
-                    this.phase = Phase.None;
+                    ReStart();
                 }
                 break;
 
@@ -233,6 +255,10 @@ public class GameManager : MonoBehaviour {
         // 時間経過させる
         this.time += Time.deltaTime;
         // 各種Text更新
+        var pos = this.player.transform.position;
+        this.hitPointValueText.text = this.hp.ToString();
+        this.heightValueText.text = pos.y.ToString("f2");
+        this.distanceValueText.text = pos.z.ToString("f2");
         this.timeValueText.text = this.time.ToString( "f2" );
     }
 
@@ -244,6 +270,22 @@ public class GameManager : MonoBehaviour {
         this.time = 0f;
         this.hp = this.PlayerStartHP;
         this.player = GameObject.FindWithTag( "Player" );
+
+        // BGM再生
+        SoundManager.Instance.PlayFadeIn( SoundManager.Sounds.BGMStage1, 10f, isLoop: true );
+    }
+
+    /// <summary>
+    /// リスタート処理
+    /// </summary>
+    private void ReStart()
+    {
+        // BGM停止
+        SoundManager.Instance.Stop(SoundManager.Sounds.BGMStage1);
+        // シーンロード
+        Application.LoadLevel(Application.loadedLevel);
+        // フェーズをなしにする
+        this.phase = Phase.None;
     }
 
     /// <summary>
@@ -263,6 +305,8 @@ public class GameManager : MonoBehaviour {
             case Phase.Pause:
                 break;
             case Phase.Dead:
+                // パラメータ更新
+                UpdateParameters();
                 // 死亡画面出す
                 CreateCanvas( this.deadCanvas );
                 break;
@@ -293,6 +337,9 @@ public class GameManager : MonoBehaviour {
     //-------------------------------------------------------------------------
     #region // デバッグ用
 
+    /// <summary>
+    /// デバッグ用定期処理
+    /// </summary>
     [System.Diagnostics.Conditional( "_DEBUG" )]
     private void DebugUpdate() {
         // リスタート処理
