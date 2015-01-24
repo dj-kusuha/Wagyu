@@ -73,11 +73,6 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     #region // private変数
 
     /// <summary>
-    /// キャッシュ用変数
-    /// </summary>
-    private HashSet<AudioSource> cache = new HashSet<AudioSource>();
-
-    /// <summary>
     /// Resourcesに含まれるサウンドファイルリスト
     /// </summary>
     private Dictionary<string, AudioClip> _clips;
@@ -129,52 +124,6 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         return source;
     }
     
-    /// <summary>
-    /// サウンド停止
-    /// </summary>
-    /// <param name="sound">停止するサウンド</param>
-    public void Stop( Sounds sound ) {
-        // 指定のクリップ名のクリップを鳴らしているものの再生を止める
-        var clip = GetAudioClip( sound );
-        var sources = this.cache.Where( _ => _.clip == clip );
-        foreach( var s in sources ) {
-            s.Stop();
-        }
-    }
-
-        /// <summary>
-    /// サウンド一時停止
-    /// </summary>
-    /// <param name="sound">再生するサウンド</param>
-    public void Pause( Sounds sound ) {
-        // 指定のクリップ名のクリップを鳴らしているものの再生を一時停止する
-        var clip = GetAudioClip( sound );
-        var sources = this.cache.Where( _ => _.isPlaying && _.clip == clip );
-        foreach( var s in sources ) {
-            s.Pause();
-        }
-    }
-
-    /// <summary>
-    /// 全てのサウンド停止
-    /// </summary>
-    public void StopAll() {
-        foreach( var s in this.cache ) {
-            s.Stop();
-        }
-    }
-
-    /// <summary>
-    /// キャッシュをクリアする
-    /// </summary>
-    /// <remarks>同時再生するサウンドが多い場合、適当なタイミングで呼んでください。</remarks>
-    public void ClearCache() {
-        // 再生中ではないものを破棄する
-        var sources = this.cache.Where( _ => !_.isPlaying );
-        foreach( var s in sources ) { Destroy( s.gameObject ); }
-        // 再生中のものだけにしたHashSetを新たに生成
-        this.cache = new HashSet<AudioSource>( this.cache.Where( _ => _.isPlaying ) );
-    }
 
     /// <summary>
     /// 指定されたサウンドの中からランダムでSEを再生する
@@ -184,6 +133,15 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     public AudioSource RandomSEPlay( Sounds[] sounds ) {
         int index = Random.Range( 0, sounds.Length );
         return Play( sounds[ index ] );
+    }
+
+
+    internal void Clear() {
+        var objs = GameObject.FindGameObjectsWithTag( "Audio" );
+        var sources = objs.Select( _ => _.GetComponent<AudioSource>() ).Where( _ => !_.isPlaying );
+        foreach( var s in sources ) {
+            Destroy( s.gameObject );
+        }
     }
 
     #endregion
@@ -197,17 +155,11 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     private AudioSource GetAudioSource() {
         AudioSource ret;
 
-        // キャッシュ内を検索し、使えるものがあればそれを返す
-        ret = this.cache.FirstOrDefault( _ => !_.isPlaying );
-        if( ret != null ) { return ret; }
-
-        // 見つからないので新規に生成する
+        // 新規に生成する
         var obj = new GameObject( "AudioSource" );
         obj.transform.parent = this.transform;
         ret = obj.AddComponent<AudioSource>();
-
-        // キャッシュに積む
-        this.cache.Add( ret );
+        obj.tag = "Audio";
 
         return ret;
     }
@@ -227,5 +179,4 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 
     #endregion
     //-------------------------------------------------------------------------
-
 }

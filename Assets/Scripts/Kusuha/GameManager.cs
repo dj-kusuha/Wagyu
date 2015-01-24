@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// フェードイン・アウトの時間
     /// </summary>
-    private const float FadeTime = 0.5f;
+    private const float FadeTime = 0.25f;
 
     /// <summary>
     /// サウンドの音量
@@ -302,10 +302,7 @@ public class GameManager : MonoBehaviour {
 
             // ゴールしたよ
             case Phase.Goal:
-                // TODO: とりあえずキー押し直したらリスタート。この辺はちょっと変える
-                if( Input.anyKeyDown ) {
-                    ReStart();
-                }
+                // ボタン待ちなので何もしないよ
                 break;
 
             default:
@@ -338,6 +335,8 @@ public class GameManager : MonoBehaviour {
         this.player = GameObject.FindWithTag( "Player" );
         // BGM再生
         PlayBgm();
+        // サウンドマネージャをクリアする
+        SoundManager.Instance.Clear();
     }
 
     /// <summary>
@@ -353,6 +352,8 @@ public class GameManager : MonoBehaviour {
         // 最初から再生なのか、それとも一時停止から再生なのか
         bool isRestart = Random.Range( 0, 2 ) == 0;
 
+        isRestart = true;
+
         // 直近のBGMと同じか調べる
         if( prevBgm == selected && isRestart ) {
             // 同じなのでそのままフェードイン再生
@@ -361,10 +362,11 @@ public class GameManager : MonoBehaviour {
             PlayFadeIn( bgmSource, FadeTime, SoundVolume );
         } else {
             // BGMを一旦停止
-            SoundManager.Instance.Stop( prevBgm );
+            if( bgmSource != null ) {
+                bgmSource.Stop();
+            }
             // 改めて再生
-            bgmSource = SoundManager.Instance.Play( selected, 0f, true );
-            PlayFadeIn( bgmSource, FadeTime, SoundVolume );
+            bgmSource = SoundManager.Instance.Play( selected, SoundVolume, true );
             // 直近のBGMを更新
             prevBgm = selected;
         }
@@ -376,7 +378,8 @@ public class GameManager : MonoBehaviour {
     private void ReStart() {
         // リスタートSE
         SoundManager.Instance.RandomSEPlay( this.restartSE );
-
+        // BGMを一旦ポーズ
+        bgmSource.Pause();
         // シーンロード
         Application.LoadLevel( Application.loadedLevel );
         // フェーズをなしにする
@@ -403,7 +406,7 @@ public class GameManager : MonoBehaviour {
                 // パラメータ更新
                 UpdateParameters();
                 // 死亡画面出す
-                CreateCanvas( this.deadCanvas );
+                this.deadCanvas.SetActive( true );
                 // BGMフェードアウト
                 StartCoroutine( FadeOutCoroutine( bgmSource, FadeTime, true ) );
                 break;
@@ -411,10 +414,9 @@ public class GameManager : MonoBehaviour {
                 this.player.SetActive( false );
                 this.leaf.SetActive( true );
                 // リザルト画面出す
-                {
-                    var obj = CreateCanvas( this.resultCanvas );
-                    StartCoroutine( WaitSetActive( 2f, obj, true ) );
-                }
+                StartCoroutine( WaitSetActive( 2f, this.resultCanvas, true ) );
+                // BGMフェードアウト
+                StartCoroutine( FadeOutCoroutine( bgmSource, FadeTime, true ) );
                 break;
 
             default:
@@ -423,17 +425,6 @@ public class GameManager : MonoBehaviour {
         }
 
         this.phase = nextPhase;
-    }
-
-    /// <summary>
-    /// Canvasを生成する
-    /// </summary>
-    /// <param name="canvasPrefab">Canvasのprfab</param>
-    /// <returns>生成したCanvasのGameObject</returns>
-    private GameObject CreateCanvas( GameObject canvasPrefab ) {
-        var obj = (GameObject)Instantiate( canvasPrefab );
-        obj.transform.SetParent( this.uiRoot.transform );
-        return obj;
     }
 
     #endregion
@@ -519,9 +510,39 @@ public class GameManager : MonoBehaviour {
     /// <param name="gameObject">GameObject</param>
     /// <param name="active">activeにするかどうか</param>
     /// <returns>IEnumerator</returns>
-    private IEnumerator WaitSetActive( float waitTime, GameObject gameObject,  bool active ) {
+    private IEnumerator WaitSetActive( float waitTime, GameObject gameObject, bool active ) {
         yield return new WaitForSeconds( waitTime );
         gameObject.SetActive( active );
+    }
+
+    #endregion
+    //-------------------------------------------------------------------------
+    #region // ボタンコールバック
+
+    /// <summary>
+    /// もういっかい　ボタン押下時
+    /// </summary>
+    public void OnReStart() {
+        Debug.Log( "OnReStart: " + this.phase );
+        // Goalフェーズの時だけ
+        if( this.phase == Phase.Goal ) {
+            ReStart();
+        }
+    }
+
+    /// <summary>
+    /// タイトルへ　ボタン押下時
+    /// </summary>
+    public void OnGoToTitle() {
+        // Goalフェーズの時だけ
+        if( this.phase == Phase.Goal ) {
+            // フェーズを切って
+            this.phase = Phase.None;
+            // BGM切って
+            bgmSource.Stop();
+            // タイトルシーンへ
+            Application.LoadLevel( 0 );
+        }
     }
 
     #endregion
