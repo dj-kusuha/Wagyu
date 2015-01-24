@@ -7,6 +7,46 @@ using System.Collections;
 /// </summary>
 public class GameManager : SingletonMonoBehaviour<GameManager> {
     //-------------------------------------------------------------------------
+    #region // 宣言・定数
+
+    /// <summary>
+    /// フェーズ定義
+    /// </summary>
+    private enum Phase {
+        /// <summary>
+        /// なし
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// プレイスタート
+        /// </summary>
+        PlayStart,
+
+        /// <summary>
+        /// ゲームプレイ
+        /// </summary>
+        Play,
+
+        /// <summary>
+        /// ポーズ
+        /// </summary>
+        Pause,
+
+        /// <summary>
+        /// 死亡
+        /// </summary>
+        Dead,
+
+        /// <summary>
+        /// ゴール
+        /// </summary>
+        Goal,
+
+    }
+
+    #endregion
+    //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
 
     /// <summary>
@@ -24,6 +64,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     #endregion
     //-------------------------------------------------------------------------
     #region // private変数
+
+    /// <summary>
+    /// フェーズ
+    /// </summary>
+    private Phase phase;
 
     /// <summary>
     /// 経過時間
@@ -48,7 +93,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     /// ゲームをプレー中かどうか
     /// </summary>
     /// <remarks>死んだり、ゴールしたり、ポーズしたりしたらfalse</remarks>
-    private bool IsPlaying { get; set; }
+    private bool IsPlaying { get { return this.phase == Phase.Play; } }
 
     #endregion
     //-------------------------------------------------------------------------
@@ -64,10 +109,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         this.hp -= damage;
         // ヒットポイントが0以下になったら終わり
         if( this.hp <= 0 ) {
-            // 今はとりあえずユニティちゃんを削除しておく
-            Destroy( this.player );
-
-            this.IsPlaying = false;
+            ChangePhase( Phase.Dead );
         }
     }
 
@@ -76,6 +118,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     /// </summary>
     public void OnHitGoal() {
         Debug.Log( "OnHitGoal" );
+
+        ChangePhase( Phase.Goal );
     }
 
     #endregion
@@ -86,17 +130,54 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
     /// 開始処理
     /// </summary>
     private void Start() {
-        Initialize();
+        ChangePhase( Phase.PlayStart );
     }
 
     /// <summary>
     /// 定期処理
     /// </summary>
     private void Update() {
-        // ゲームプレイ中
-        if( this.IsPlaying ) {
-            // パラメータ更新
-            UpdateParameters();
+        switch( this.phase ) {
+            // なし
+            case Phase.None:
+                break;
+
+            // プレイスタート
+            case Phase.PlayStart:
+                ChangePhase( Phase.Play );
+                break;
+
+            // プレイ中
+            case Phase.Play:
+                // パラメータ更新
+                UpdateParameters();
+                break;
+
+            // ポーズ中
+            case Phase.Pause:
+                break;
+
+            // 死んだよ
+            case Phase.Dead:
+                // キー押し直したらリスタート
+                if( Input.anyKeyDown ) {
+                    Application.LoadLevel( Application.loadedLevel );
+                    this.phase = Phase.None;
+                }
+                break;
+
+            // ゴールしたよ
+            case Phase.Goal:
+                // TODO: とりあえずキー押し直したらリスタート。この辺はちょっと変える
+                if( Input.anyKeyDown ) {
+                    Application.LoadLevel( Application.loadedLevel );
+                    this.phase = Phase.None;
+                }
+                break;
+
+            default:
+                Debug.LogError( "Unknown Phase: " + this.phase );
+                break;
         }
     }
 
@@ -118,8 +199,37 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
         this.time = 0f;
         this.hp = this.PlayerStartHP;
         this.player = GameObject.FindWithTag( "Player" );
+    }
 
-        this.IsPlaying = true;
+    /// <summary>
+    /// フェーズ切り替え処理
+    /// </summary>
+    /// <param name="nextPhase">次のフェーズ</param>
+    private void ChangePhase( Phase nextPhase ) {
+        // 切り替えの前処理
+        switch( nextPhase ) {
+            case Phase.None:
+                break;
+            case Phase.PlayStart:
+                Initialize();
+                break;
+            case Phase.Play:
+                break;
+            case Phase.Pause:
+                break;
+            case Phase.Dead:
+                // 今はとりあえずユニティちゃんを削除しておく
+                Destroy( this.player );
+                break;
+            case Phase.Goal:
+                break;
+
+            default:
+                Debug.LogError( "Unknown Phase: " + this.phase );
+                break;
+        }
+
+        this.phase = nextPhase;
     }
 
 
