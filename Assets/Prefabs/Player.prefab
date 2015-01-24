@@ -6573,15 +6573,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e82818cb0062f8e44a083020126c8b67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cnt: 0
-  step: 3
   anim: {fileID: 0}
-  isIkActive: 0
+  isIkActiveReight: 0
+  isIkActiveLeft: 0
   mixWeight: 1
-  LeftHand: {fileID: 0}
-  RightHand: {fileID: 0}
   RightUchiwa: {fileID: 479090}
   LeftUchiwa: {fileID: 479092}
+  pata:
+    serializedVersion: 2
+    m_Curve:
+    - time: -.000410860113
+      value: .799993873
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: .499995738
+      value: .399969906
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: .798089027
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
 --- !u!114 &11490024
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -8262,6 +8279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cnt: 0
   step: 3
+  uci: {fileID: 11479090}
 --- !u!114 &11490176
 MonoBehaviour:
   m_ObjectHideFlags: 1

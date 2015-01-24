@@ -6,6 +6,9 @@ public class Fisix : MonoBehaviour {
 	public int cnt = 0;
 	public int step = 3;
 
+	public Uchiwa uci;
+
+
 	// Use this for initialization
 	void Start () {
 	
@@ -13,14 +16,28 @@ public class Fisix : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		if (Input.GetKey (KeyCode.RightArrow)) {
+			if (uci.isIkActiveLeft == false && uci.isIkActiveReight == false) {
+					uci.isIkActiveReight = true;
+			}
+		} else if (Input.GetKey (KeyCode.LeftArrow)) {
+			if (uci.isIkActiveLeft == false && uci.isIkActiveReight == false) {
+				uci.isIkActiveLeft = true;
+			}
+		}
 		if (cnt++ % step == 0) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
-					rigidbody.AddForce (Vector3.up * 50, ForceMode.Acceleration);
-			} else if (Input.GetKey (KeyCode.RightArrow)) {
-					transform.Rotate (new Vector3 (0, 10.0f, 0) * Time.deltaTime);
-			} else if (Input.GetKey (KeyCode.LeftArrow)) {
-					transform.Rotate (new Vector3 (0, -10.0f, 0) * Time.deltaTime);
-			} else {
+//					rigidbody.AddForce (Vector3.up * 50, ForceMode.Acceleration);
+			}
+			else if (uci.isIkActiveReight){
+				transform.Rotate (new Vector3 (0, -10.0f, 0) * Time.deltaTime);
+				rigidbody.AddForce (Vector3.up * 25, ForceMode.Acceleration);
+
+			}
+			else if (uci.isIkActiveLeft) {
+				transform.Rotate (new Vector3 (0, 10.0f, 0) * Time.deltaTime);
+				rigidbody.AddForce (Vector3.up * 25, ForceMode.Acceleration);
 			}
 		} else {
 			rigidbody.AddForce (Vector3.up * Random.Range (0.0f, 12.0f), ForceMode.Acceleration);
