@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b6b0d09c0f22e334f8cf574f2915ae4f
+guid: 2aa1657469e943d45b35d07858e00309
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
@@ -7,7 +7,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: BezierCurve
+    4300000: hachi_A
     9500000: //RootNode
   materials:
     importMaterials: 1
