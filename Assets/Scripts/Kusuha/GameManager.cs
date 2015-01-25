@@ -55,6 +55,11 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private const float SoundVolume = 1f;
 
+    /// <summary>
+    /// 机の高さ
+    /// </summary>
+    private const float DeskHeight = 1278.68f;
+
     #endregion
     //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
@@ -320,8 +325,8 @@ public class GameManager : MonoBehaviour {
         // 各種Text更新
         var pos = this.player.transform.position;
         this.hitPointValueText.text = this.hp.ToString();
-        this.heightValueText.text = pos.y.ToString( "f2" );
-        this.distanceValueText.text = pos.z.ToString( "f2" );
+        this.heightValueText.text = ( pos.y - DeskHeight ).ToString( "f2" );
+        this.distanceValueText.text = ( this.time * 7 ).ToString( "f2" );
         this.timeValueText.text = this.time.ToString( "f2" );
     }
 
