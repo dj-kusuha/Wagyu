@@ -31,22 +31,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &196732
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 496732}
-  - 65: {fileID: 6596728}
-  m_Layer: 0
-  m_Name: DummyCollider
-  m_TagString: Enemy
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &196734
 GameObject:
   m_ObjectHideFlags: 0
@@ -72,9 +56,10 @@ GameObject:
   - 4: {fileID: 496736}
   - 33: {fileID: 3396728}
   - 23: {fileID: 2396728}
+  - 65: {fileID: 6504340}
   m_Layer: 0
   m_Name: desk_ggj
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,7 +77,6 @@ Transform:
   - {fileID: 496730}
   - {fileID: 496736}
   - {fileID: 496734}
-  - {fileID: 496732}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &496730
@@ -107,18 +91,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 496728}
   m_RootOrder: 0
---- !u!4 &496732
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 196732}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.06999993, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 496728}
-  m_RootOrder: 3
 --- !u!4 &496734
 Transform:
   m_ObjectHideFlags: 1
@@ -170,18 +142,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 196736}
   m_Mesh: {fileID: 4300000, guid: 5a51b2b07e44b694ca785e2b71e6702c, type: 3}
---- !u!65 &6596728
+--- !u!65 &6504340
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 196732}
+  m_GameObject: {fileID: 196736}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.36999989, y: .25, z: 3.13000011}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 6.39818382, y: 3.32204795, z: 3.19909096}
+  m_Center: {x: 6.35093866e-23, y: -6.55515521e-07, z: 1.599545}
 --- !u!95 &9596728
 Animator:
   serializedVersion: 3
