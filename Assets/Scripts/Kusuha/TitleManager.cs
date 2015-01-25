@@ -18,7 +18,9 @@ public class TitleManager : MonoBehaviour {
     [SerializeField, Tooltip( "スタートSE" )]
     private SoundManager.Sounds[] startSE;
 
-
+    /// <summary>
+    /// BGMのAudioSource
+    /// </summary>
     private AudioSource bgmSource;
 
     /// <summary>
