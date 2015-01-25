@@ -5714,7 +5714,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190144}
   m_LocalRotation: {x: .184637532, y: 0, z: 0, w: .982806683}
-  m_LocalPosition: {x: 0, y: 1931, z: -1070}
+  m_LocalPosition: {x: 0, y: 1716, z: -1010}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 489848}
@@ -5780,8 +5780,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190154}
-  m_LocalRotation: {x: -.0972354338, y: 0, z: 0, w: -.995261431}
-  m_LocalPosition: {x: 0, y: 2.70000005, z: -4.11999989}
+  m_LocalRotation: {x: -.0493727364, y: 0, z: 0, w: .998780429}
+  m_LocalPosition: {x: 0, y: -.49000001, z: -22.4300003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 490144}
@@ -6263,8 +6263,8 @@ Camera:
     width: 1
     height: 1
   near clip plane: .300000012
-  far clip plane: 2000
-  field of view: 73
+  far clip plane: 10000
+  field of view: 30.5
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -6447,7 +6447,7 @@ Skybox:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190154}
   m_Enabled: 1
-  m_CustomSkybox: {fileID: 2100000, guid: da976b1a4f7ebb949b0f71341e4f1821, type: 2}
+  m_CustomSkybox: {fileID: 2100000, guid: 2e54b40943cf58d4fa1a1b02774a4456, type: 2}
 --- !u!54 &5490222
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -6554,8 +6554,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
-  isIkActiveReight: 1
-  isIkActiveLeft: 1
+  isIkActiveReight: 0
+  isIkActiveLeft: 0
   mixWeight: 1
   RightUchiwa: {fileID: 479090}
   LeftUchiwa: {fileID: 479092}
@@ -8259,6 +8259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cnt: 0
   step: 3
+  v_y: 0
   uci: {fileID: 11479090}
 --- !u!114 &11490176
 MonoBehaviour:
