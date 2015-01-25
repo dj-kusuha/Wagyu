@@ -404,7 +404,9 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void ReStart() {
         // 死亡ジングル停止
-        this.gameoverJingleSource.Stop();
+        if( this.gameoverJingleSource != null ) {
+            this.gameoverJingleSource.Stop();
+        }
         // リスタートSE
         SoundManager.Instance.RandomSEPlay( this.restartSE );
         // BGMを一旦ポーズ
