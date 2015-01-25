@@ -34,6 +34,8 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 
         BGMStage1,
         BGMStart,
+
+        JingleClear,
     }
 
     /// <summary>
@@ -58,6 +60,8 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         
         { Sounds.BGMStage1, "Stage1" },
         { Sounds.BGMStart, "Start" },
+
+        { Sounds.JingleClear, "Clear" },
     };
 
     #endregion

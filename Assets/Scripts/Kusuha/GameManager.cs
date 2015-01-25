@@ -237,9 +237,6 @@ public class GameManager : MonoBehaviour {
 
         // プレイ中のみ
         if( this.phase == Phase.Play ) {
-            // クリアしたよSE
-            SoundManager.Instance.RandomSEPlay( this.clearSE );
-
             ChangePhase( Phase.Goal );
         }
     }
@@ -416,10 +413,13 @@ public class GameManager : MonoBehaviour {
                 StartCoroutine( FadeOutCoroutine( bgmSource, FadeTime, true ) );
                 break;
             case Phase.Goal:
+                // クリアジングル
+                SoundManager.Instance.Play( SoundManager.Sounds.JingleClear );
+                // ユニティちゃんを消してリーフを追加
                 this.player.SetActive( false );
                 this.leaf.SetActive( true );
                 // リザルト画面出す
-                StartCoroutine( WaitSetActive( 2f, this.resultCanvas, true ) );
+                StartCoroutine( ClearWaitSetActive( 5f ) );
                 // BGMフェードアウト
                 StartCoroutine( FadeOutCoroutine( bgmSource, FadeTime, true ) );
                 break;
@@ -515,9 +515,12 @@ public class GameManager : MonoBehaviour {
     /// <param name="gameObject">GameObject</param>
     /// <param name="active">activeにするかどうか</param>
     /// <returns>IEnumerator</returns>
-    private IEnumerator WaitSetActive( float waitTime, GameObject gameObject, bool active ) {
+    private IEnumerator ClearWaitSetActive( float waitTime ) {
         yield return new WaitForSeconds( waitTime );
-        gameObject.SetActive( active );
+        // リザルト画面描画
+        this.resultCanvas.SetActive( true );
+        // ユニティちゃんSE
+        SoundManager.Instance.RandomSEPlay( this.clearSE );
     }
 
     #endregion
