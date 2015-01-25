@@ -438,6 +438,8 @@ public class GameManager : MonoBehaviour {
                 this.gameoverJingleSource = SoundManager.Instance.Play( SoundManager.Sounds.JingleGameOver, isLoop: true );
                 // パラメータ更新
                 UpdateParameters();
+                // ユニティちゃんしぬ
+                this.player.transform.FindChild("Armature").gameObject.SetActive( false );
                 // 死亡画面出す
                 this.deadCanvas.SetActive( true );
                 // BGMフェードアウト
