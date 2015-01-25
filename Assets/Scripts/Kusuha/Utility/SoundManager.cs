@@ -33,6 +33,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         SERestart2,
 
         BGMStage1,
+        BGMStart,
     }
 
     /// <summary>
@@ -54,8 +55,9 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
 
         { Sounds.SERestart1, "univ1026" },
         { Sounds.SERestart2, "univ1027" },
-
+        
         { Sounds.BGMStage1, "Stage1" },
+        { Sounds.BGMStart, "Start" },
     };
 
     #endregion
@@ -136,7 +138,10 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
     }
 
 
-    internal void Clear() {
+    /// <summary>
+    /// 生成したAudioSourceをクリアする
+    /// </summary>
+    public void Clear() {
         var objs = GameObject.FindGameObjectsWithTag( "Audio" );
         var sources = objs.Select( _ => _.GetComponent<AudioSource>() ).Where( _ => !_.isPlaying );
         foreach( var s in sources ) {
