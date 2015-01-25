@@ -5019,7 +5019,10 @@ MonoBehaviour:
   heightValueText: {fileID: 1196839181}
   distanceValueText: {fileID: 549105563}
   timeValueText: {fileID: 1476593695}
-  PlayerStartHP: 3
+  playerStartHP: 0
+  playerStartPositions:
+  - {x: 0, y: 1716, z: -1010}
+  - {x: 0, y: 2000, z: -2000}
   bgms: 0c000000
   damageSE: 030000000400000005000000
   deadSE: 0600000007000000
@@ -12722,7 +12725,7 @@ Transform:
   m_PrefabInternal: {fileID: 1812214251}
   m_GameObject: {fileID: 1639985886}
   m_LocalRotation: {x: .184637532, y: 0, z: 0, w: .982806683}
-  m_LocalPosition: {x: 0, y: 1716, z: -1010}
+  m_LocalPosition: {x: 0, y: 2000, z: -2000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 634677085}
@@ -14231,11 +14234,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 490144, guid: 322b799ef91911244ab3c120a78122be, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1716
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 490144, guid: 322b799ef91911244ab3c120a78122be, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -1010
+      value: -2000
       objectReference: {fileID: 0}
     - target: {fileID: 490144, guid: 322b799ef91911244ab3c120a78122be, type: 2}
       propertyPath: m_LocalRotation.x

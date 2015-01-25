@@ -117,7 +117,13 @@ public class GameManager : MonoBehaviour {
     /// プレイヤーの初期ヒットポイント
     /// </summary>
     [SerializeField, Tooltip( "プレイヤーの初期ヒットポイントを指定します" ), Header( "Settings" )]
-    private int PlayerStartHP;
+    private int playerStartHP;
+
+    /// <summary>
+    /// プレイヤーの初期位置リスト
+    /// </summary>
+    [SerializeField, Tooltip( "プレイヤーの初期位置リストを指定します" )]
+    private Vector3[] playerStartPositions;
 
     /// <summary>
     /// BGMの指定
@@ -332,9 +338,15 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     /// <remarks>ゲーム開始時に必ず呼ぶ</remarks>
     private void Initialize() {
+        // 各種変数の初期化
         this.time = 0f;
-        this.hp = this.PlayerStartHP;
+        this.hp = this.playerStartHP;
         this.player = GameObject.FindWithTag( "Player" );
+        // プレイヤーの位置設定
+        if( this.playerStartPositions.Length > 0 ) {
+            var index = Random.Range( 0, this.playerStartPositions.Length );
+            this.player.transform.localPosition = this.playerStartPositions[ index ];
+        }
         // BGM再生
         PlayBgm();
         // サウンドマネージャをクリアする
