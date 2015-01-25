@@ -347,7 +347,7 @@ Transform:
   m_PrefabParentObject: {fileID: 401542, guid: 322b799ef91911244ab3c120a78122be, type: 2}
   m_PrefabInternal: {fileID: 1812214251}
   m_GameObject: {fileID: 36842131}
-  m_LocalRotation: {x: .00234940019, y: -.707102895, z: -.00234947377, w: .707102835}
+  m_LocalRotation: {x: .00234940043, y: -.707102954, z: -.002349474, w: .707102895}
   m_LocalPosition: {x: .030000018, y: .00427433103, z: -0}
   m_LocalScale: {x: .00999999512, y: .00999999698, z: .00999999419}
   m_Children: []
@@ -3195,7 +3195,7 @@ Transform:
   m_PrefabParentObject: {fileID: 414560, guid: 322b799ef91911244ab3c120a78122be, type: 2}
   m_PrefabInternal: {fileID: 1812214251}
   m_GameObject: {fileID: 413987885}
-  m_LocalRotation: {x: .356328577, y: -.610761762, z: -.356328577, w: .610761762}
+  m_LocalRotation: {x: .356328607, y: -.610761821, z: -.356328607, w: .610761821}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4943,10 +4943,12 @@ MonoBehaviour:
   heightValueText: {fileID: 1196839181}
   distanceValueText: {fileID: 549105563}
   timeValueText: {fileID: 1476593695}
-  playerStartHP: 0
+  playerStartHP: 3
   playerStartPositions:
-  - {x: 0, y: 1716, z: -1010}
-  - {x: 0, y: 2000, z: -2000}
+  - positon: {x: -1821, y: 2090, z: -1270}
+    rotation: {x: 14.6000004, y: 47.9000015, z: 2.20000005}
+  - positon: {x: 0, y: 2000, z: -2000}
+    rotation: {x: 21.7999992, y: 0, z: 0}
   bgms: 0c000000
   damageSE: 030000000400000005000000
   deadSE: 0600000007000000
@@ -10208,7 +10210,7 @@ Transform:
   m_PrefabParentObject: {fileID: 414810, guid: 322b799ef91911244ab3c120a78122be, type: 2}
   m_PrefabInternal: {fileID: 1812214251}
   m_GameObject: {fileID: 1345414892}
-  m_LocalRotation: {x: -.471922338, y: .546780407, z: .457036376, w: .519074559}
+  m_LocalRotation: {x: -.471922308, y: .546780348, z: .457036346, w: .5190745}
   m_LocalPosition: {x: -.109999999, y: 0, z: 0}
   m_LocalScale: {x: .999997973, y: .999998689, z: .999998569}
   m_Children: []

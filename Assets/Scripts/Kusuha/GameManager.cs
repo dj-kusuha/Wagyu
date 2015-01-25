@@ -60,6 +60,12 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private const float DeskHeight = 1278.68f;
 
+    [System.Serializable]
+    private struct StartPosition {
+        public Vector3 positon;
+        public Vector3 rotation;        
+    }
+
     #endregion
     //-------------------------------------------------------------------------
     #region // Inspectorで設定するprivate変数
@@ -123,7 +129,7 @@ public class GameManager : MonoBehaviour {
     /// プレイヤーの初期位置リスト
     /// </summary>
     [SerializeField, Tooltip( "プレイヤーの初期位置リストを指定します" )]
-    private Vector3[] playerStartPositions;
+    private StartPosition[] playerStartPositions;
 
     /// <summary>
     /// BGMの指定
@@ -188,6 +194,11 @@ public class GameManager : MonoBehaviour {
     /// 現在のBGMのAudioSource
     /// </summary>
     private static AudioSource bgmSource;
+
+    /// <summary>
+    /// ゲームオーバー時のAudioSource
+    /// </summary>
+    private AudioSource gameoverJingleSource;
 
     #endregion
     //-------------------------------------------------------------------------
@@ -345,7 +356,9 @@ public class GameManager : MonoBehaviour {
         // プレイヤーの位置設定
         if( this.playerStartPositions.Length > 0 ) {
             var index = Random.Range( 0, this.playerStartPositions.Length );
-            this.player.transform.localPosition = this.playerStartPositions[ index ];
+            var p = this.playerStartPositions[ index ];
+            this.player.transform.localPosition = p.positon;
+            this.player.transform.localRotation = Quaternion.Euler( p.rotation );
         }
         // BGM再生
         PlayBgm();
@@ -390,6 +403,8 @@ public class GameManager : MonoBehaviour {
     /// リスタート処理
     /// </summary>
     private void ReStart() {
+        // 死亡ジングル停止
+        this.gameoverJingleSource.Stop();
         // リスタートSE
         SoundManager.Instance.RandomSEPlay( this.restartSE );
         // BGMを一旦ポーズ
@@ -417,6 +432,8 @@ public class GameManager : MonoBehaviour {
             case Phase.Pause:
                 break;
             case Phase.Dead:
+                // 死亡ングル
+                this.gameoverJingleSource = SoundManager.Instance.Play( SoundManager.Sounds.JingleGameOver, isLoop: true );
                 // パラメータ更新
                 UpdateParameters();
                 // 死亡画面出す
