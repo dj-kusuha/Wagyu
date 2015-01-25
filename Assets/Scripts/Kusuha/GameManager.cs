@@ -195,6 +195,11 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private static AudioSource bgmSource;
 
+    /// <summary>
+    /// ゲームオーバー時のAudioSource
+    /// </summary>
+    private AudioSource gameoverJingleSource;
+
     #endregion
     //-------------------------------------------------------------------------
     #region // publicプロパティ
@@ -398,6 +403,8 @@ public class GameManager : MonoBehaviour {
     /// リスタート処理
     /// </summary>
     private void ReStart() {
+        // 死亡ジングル停止
+        this.gameoverJingleSource.Stop();
         // リスタートSE
         SoundManager.Instance.RandomSEPlay( this.restartSE );
         // BGMを一旦ポーズ
@@ -425,6 +432,8 @@ public class GameManager : MonoBehaviour {
             case Phase.Pause:
                 break;
             case Phase.Dead:
+                // 死亡ングル
+                this.gameoverJingleSource = SoundManager.Instance.Play( SoundManager.Sounds.JingleGameOver, isLoop: true );
                 // パラメータ更新
                 UpdateParameters();
                 // 死亡画面出す

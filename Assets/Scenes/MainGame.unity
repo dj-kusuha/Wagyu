@@ -4919,7 +4919,7 @@ MonoBehaviour:
   heightValueText: {fileID: 1196839181}
   distanceValueText: {fileID: 549105563}
   timeValueText: {fileID: 1476593695}
-  playerStartHP: 0
+  playerStartHP: 3
   playerStartPositions:
   - positon: {x: -1821, y: 2090, z: -1270}
     rotation: {x: 14.6000004, y: 47.9000015, z: 2.20000005}

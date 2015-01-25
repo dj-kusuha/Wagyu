@@ -36,6 +36,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         BGMStart,
 
         JingleClear,
+        JingleGameOver,
     }
 
     /// <summary>
@@ -60,8 +61,9 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         
         { Sounds.BGMStage1, "Stage1" },
         { Sounds.BGMStart, "Start" },
-
+        
         { Sounds.JingleClear, "Clear" },
+        { Sounds.JingleGameOver, "GameOver" },
     };
 
     #endregion
