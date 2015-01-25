@@ -33,13 +33,13 @@ public class Fisix : MonoBehaviour {
 //					rigidbody.AddForce (Vector3.up * 50, ForceMode.Acceleration);
 			}
 			else if (uci.isIkActiveReight){
-				transform.Rotate (new Vector3 (0, -30.0f, 0) * Time.deltaTime);
+				transform.Rotate (new Vector3 (0, -10.0f, 0) * Time.deltaTime);
 //				rigidbody.AddForce (Vector3.up * Random.Range (11.0f, 12.0f), ForceMode.Acceleration);
 //				rigidbody.AddForce (Vector3.up * Random.Range (0.275f, 0.3f), ForceMode.VelocityChange);
 
 			}
 			else if (uci.isIkActiveLeft) {
-				transform.Rotate (new Vector3 (0, 30.0f, 0) * Time.deltaTime);
+				transform.Rotate (new Vector3 (0, 10.0f, 0) * Time.deltaTime);
 //				rigidbody.AddForce (Vector3.up  * Random.Range (11.0f, 12.0f), ForceMode.Acceleration);
 //				rigidbody.AddForce (Vector3.up * Random.Range (0.275f, 0.3f), ForceMode.VelocityChange);
 			}
@@ -47,14 +47,14 @@ public class Fisix : MonoBehaviour {
 
 		}
 		v_y = rigidbody.velocity.y;
-		if (transform.position.y < 4) {
+//		if (transform.position.y < 4) {
 			if(rigidbody.velocity.y < 0){
 				rigidbody.AddForce (Vector3.up * Random.Range (0.275f, 0.3f), ForceMode.VelocityChange);
-				Debug.Log("Jump");
+//				Debug.Log("Jump");
 			}
-		}
+//		}
 		rigidbody.AddForce (Vector3.right * Random.Range (-50.0f, 50.0f), ForceMode.Acceleration);
-		rigidbody.AddForce (transform.forward * Random.Range (0.5f, 1.5f), ForceMode.Acceleration);
+		rigidbody.AddForce (transform.forward * Random.Range (20.5f, 25.5f), ForceMode.Acceleration);
 		transform.localEulerAngles = new Vector3 (transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
 
 	}
