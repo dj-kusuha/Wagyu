@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd92896fc48d55a44bd9b3832d30bf91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgm: 13
+  bgm: 14
   startSE: 0100000002000000
 --- !u!1 &1615206830
 GameObject:

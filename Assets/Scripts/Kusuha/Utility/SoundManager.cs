@@ -33,6 +33,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         SERestart2,
 
         BGMStage1,
+        BGMStage1_2,
         BGMStart,
 
         JingleClear,
@@ -60,6 +61,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager> {
         { Sounds.SERestart2, "univ1027" },
         
         { Sounds.BGMStage1, "Stage1" },
+        { Sounds.BGMStage1_2, "Stage1-2" },
         { Sounds.BGMStart, "Start" },
         
         { Sounds.JingleClear, "Clear" },
