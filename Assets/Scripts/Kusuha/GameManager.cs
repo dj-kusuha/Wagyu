@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// 机の高さ
     /// </summary>
-    private const float DeskHeight = 1278.68f;
+    private const float DeskHeight = 1278.68f - 639.85f;
 
     [System.Serializable]
     private struct StartPosition {
@@ -305,6 +305,9 @@ public class GameManager : MonoBehaviour {
             case Phase.Play:
                 // パラメータ更新
                 UpdateParameters();
+
+                DebugMovePlayer();
+
                 break;
 
             // ポーズ中
@@ -329,6 +332,7 @@ public class GameManager : MonoBehaviour {
                 break;
         }
     }
+
 
     /// <summary>
     /// パラメータ更新処理
@@ -598,6 +602,20 @@ public class GameManager : MonoBehaviour {
         // リスタート処理
         if( Input.GetKey( KeyCode.Space ) ) {
             ReStart();
+        }
+    }
+
+    /// <summary>
+    /// デバッグでキャラクタを動かす
+    /// </summary>
+    [System.Diagnostics.Conditional( "_DEBUG" )]
+    private void DebugMovePlayer() {
+        if( Input.GetKey( KeyCode.DownArrow ) ) {
+            this.player.transform.Translate( Vector3.down );
+        } else if( Input.GetKey( KeyCode.UpArrow ) ) {
+            this.player.transform.Translate( Vector3.up );
+        } else if( Input.GetKey( KeyCode.Z ) ) {
+            this.player.transform.Translate( Vector3.forward );
         }
     }
 
